@@ -1,0 +1,11 @@
+﻿name: Placeholder release
+on:
+  workflow_dispatch:
+jobs:
+  note:
+    runs-on: windows-latest
+    steps:
+      - name: Build happens in Code-Ink
+        run: |
+          echo "Clone Creal212/Code-Ink, run npm run tauri:build -w @code-ink/desktop,"
+          echo "then upload the NSIS .exe to this repo's Releases."
