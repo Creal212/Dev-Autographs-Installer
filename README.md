@@ -2,7 +2,7 @@
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
-**Latest installer posted: 2026-09-26 (v0.2.1).** See [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Latest installer posted: 2026-09-26 (v0.2.1).** See [CHANGELOG.md](CHANGELOG.md) for what changed. **v0.2.2** adds clearer Update / Fresh install / Uninstall behavior (keeps `%USERPROFILE%\.dev-autographs` on update; uninstall asks to close running sessions first) — rebuild and post the `.exe` from Dev-Autographs `apps/desktop` after tagging.
 
 - Download v0.2.1 (5.3 MB): [releases/v0.2.1/](releases/v0.2.1/) in this repo. SHA-256 `F9A92CC517A50C81B3FD95D58B540DB9EF1C63176C52F69F4E2FCD3ECF0257CD`.
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
@@ -32,7 +32,17 @@ Three pieces:
 
 ### What the installer does
 
-- Installs the desk for the current user (no admin prompt), Start Menu folder *Dev Autographs*. Branded NSIS wizard.
+Three clear cases:
+
+| Case | What happens to your files |
+|---|---|
+| **Fresh install** | Installs the desk for the current user (no admin). After you Ink GitHub, identity and marks live in `%USERPROFILE%\.dev-autographs`. |
+| **Update** (app already installed) | Replaces **program files only**. Does **not** overwrite `identity.json`, locked marks, ledger cache, settings, or git hooks under `.dev-autographs`. |
+| **Uninstall** | Asks you to close the desk and any background sessions first, then removes the app. Does **not** delete `%USERPROFILE%\.dev-autographs` (optional checkbox only clears WebView app cache). Delete that folder yourself for a full wipe. |
+
+Also:
+
+- Start Menu folder *Dev Autographs*. Branded NSIS wizard.
 - Bundles the CLI (`paw-prints.cjs`) used for global git hooks (`core.hooksPath`), sealing, publishing, and the Shift + D report.
 - Connects to the hosted registry on its own. There is no URL to type.
 

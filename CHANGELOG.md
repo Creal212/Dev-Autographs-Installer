@@ -3,6 +3,15 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.2] - 2026-09-26
+
+Installer posted: **2026-09-26**. Tag `v0.2.2` (build from Dev-Autographs after NSIS hooks land).
+
+### Installer: update vs fresh vs uninstall
+- **Update** (app already present): wizard copy and a pre-install note make clear only program files are replaced. `%USERPROFILE%\.dev-autographs` (identity, locked marks, ledger cache, settings) is never overwritten.
+- **Fresh install**: explains where identity will live after Ink; later updates still leave that folder alone.
+- **Uninstall**: prompts to close the desk and any background sessions (`paw-prints agent` / Node) before continuing; then Tauri’s running-app check can close the main exe. Uninstall does not delete the identity folder. The optional “delete app data” checkbox is labeled as **WebView cache only**.
+
 ## [0.2.1] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.1` on Dev-Autographs and Dev-Autographs-Installer.
