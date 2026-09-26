@@ -3,6 +3,15 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.3] - 2026-09-26
+
+Installer posted: **2026-09-26**. Tag `v0.2.3` on Dev-Autographs and Dev-Autographs-Installer.
+File: `releases/v0.2.3/Dev-Autographs_0.2.3_x64-setup.exe` (5.3 MB), SHA-256 `E08F8B82FDC2175B41588B85D9F2C42DD564C29CDE11A33EDEF6D7E9F9B159CE`.
+
+### Desk: save autographs on non-C: installs
+- Fixed `EISDIR: illegal operation on a directory, lstat 'E:'` when saving signatures with the desk installed under a path like `E:\Dev Autographs`.
+- CLI spawn now uses absolute `node.exe` + `cli.cjs`, pins cwd to the install folder, and no longer passes font stacks on the Windows command line (identity file is the source of truth for `mark-style`).
+
 ## [0.2.2] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.2` on Dev-Autographs and Dev-Autographs-Installer.

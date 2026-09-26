@@ -2,9 +2,9 @@
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
-**Latest installer posted: 2026-09-26 (v0.2.2).** See [CHANGELOG.md](CHANGELOG.md) for what changed. Update / Fresh / Uninstall keep `%USERPROFILE%\.dev-autographs`; Exercise Book–themed wizard; durable Postgres registry; marks sync; web Ink resume fix; auto paper stock by time of day.
+**Latest installer posted: 2026-09-26 (v0.2.3).** See [CHANGELOG.md](CHANGELOG.md) for what changed. Fixes saving autographs when the desk is installed on a non-C: drive (e.g. `E:\Dev Autographs`).
 
-- Download v0.2.2 (5.3 MB): [releases/v0.2.2/](releases/v0.2.2/) in this repo. SHA-256 `D3C18D60834B081C3778A3C480ACC440F87B3D75C4A9206F6B1C5E9075528016`.
+- Download v0.2.3 (5.3 MB): [releases/v0.2.3/](releases/v0.2.3/) in this repo. SHA-256 `E08F8B82FDC2175B41588B85D9F2C42DD564C29CDE11A33EDEF6D7E9F9B159CE`.
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
 - Website and web desk: https://www.devautographs.com · [web desk](https://www.devautographs.com/desk.html)
 - App, CLI and registry source: https://github.com/Creal212/Dev-Autographs
