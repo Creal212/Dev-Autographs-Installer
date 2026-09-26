@@ -5,7 +5,7 @@ jobs:
   note:
     runs-on: windows-latest
     steps:
-      - name: Build happens in Code-Ink
+      - name: Build happens in Dev-Autographs
         run: |
-          echo "Clone Creal212/Code-Ink, run npm run tauri:build -w @code-ink/desktop,"
+          echo "Clone Creal212/Dev-Autographs, run npm run tauri:build -w @dev-autographs/desktop,"
           echo "then upload the NSIS .exe to this repo's Releases."

@@ -1,13 +1,13 @@
 name: Build and release Windows installer
 
-# Hands-off: tag a release on Code-Ink OR run this workflow manually.
-# Produces NSIS .exe and uploads to Code-Ink-Installer GitHub Releases.
+# Hands-off: tag a release on Dev-Autographs OR run this workflow manually.
+# Produces NSIS .exe and uploads to Dev-Autographs-Installer GitHub Releases.
 
 on:
   workflow_dispatch:
     inputs:
       code_ink_ref:
-        description: "Code-Ink git ref (branch/tag/SHA)"
+        description: "Dev-Autographs git ref (branch/tag/SHA)"
         required: true
         default: "master"
       version:
@@ -24,41 +24,41 @@ jobs:
   windows-installer:
     runs-on: windows-latest
     steps:
-      - name: Checkout Code-Ink
+      - name: Checkout Dev-Autographs
         uses: actions/checkout@v4
         with:
-          repository: Creal212/Code-Ink
+          repository: Creal212/Dev-Autographs
           ref: ${{ github.event.inputs.code_ink_ref || github.ref_name }}
-          path: code-ink
+          path: dev-autographs
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: code-ink/package-lock.json
+          cache-dependency-path: dev-autographs/package-lock.json
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
-        working-directory: code-ink
+        working-directory: dev-autographs
         run: npm ci
 
       - name: Build monorepo
-        working-directory: code-ink
+        working-directory: dev-autographs
         run: npm run build
 
       - name: Build Tauri NSIS installer
-        working-directory: code-ink
+        working-directory: dev-autographs
         env:
           # Bake hosted registry into production Windows builds (override secret as needed)
-          VITE_CODEINK_API: ${{ vars.CODEINK_REGISTRY_URL || 'http://127.0.0.1:8787' }}
-        run: npm run tauri:build -w @code-ink/desktop
+          VITE_DEV_AUTOGRAPHS_API: ${{ vars.DEV_AUTOGRAPHS_REGISTRY_URL || 'http://127.0.0.1:8787' }}
+        run: npm run tauri:build -w @dev-autographs/desktop
 
       - name: Find installer artifact
         id: artifact
-        working-directory: code-ink
+        working-directory: dev-autographs
         shell: pwsh
         run: |
           $exe = Get-ChildItem -Path "apps/desktop/src-tauri/target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
@@ -66,14 +66,15 @@ jobs:
           "path=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "name=$($exe.Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
-      - name: Publish to Code-Ink-Installer Releases
+      - name: Publish to Dev-Autographs-Installer Releases
         uses: softprops/action-gh-release@v2
         with:
-          repository: Creal212/Code-Ink-Installer
+          repository: Creal212/Dev-Autographs-Installer
           tag_name: ${{ github.event.inputs.version || github.ref_name }}
-          name: Code Ink ${{ github.event.inputs.version || github.ref_name }}
+          name: Dev Autographs ${{ github.event.inputs.version || github.ref_name }}
           files: ${{ steps.artifact.outputs.path }}
           generate_release_notes: true
           token: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+
