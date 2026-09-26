@@ -1,0 +1,9 @@
+{
+  "version": "pawprints-seal-v1",
+  "contentSha256": "1d99bf41d741ac6a23f691a7272d1cb4bcc5600f6364f0878e48a50cfe3327de",
+  "path": "cli/paw-prints.cjs",
+  "signer": "MCowBQYDK2VwAyEAkVgxjJxo2OdfihWNpLCsBoGLXI5_cumho7vRFNqsA24",
+  "displayMark": "Creal589",
+  "createdAt": "2026-09-26T18:32:08.032Z",
+  "signature": "AfTGCbpFRrnv7VTBBtxjLCUxAP5lVio5VZXsihtp4DCZDX9VOd7isMzPaAdwgBxiE48AnoTLfg-qCnLWO3dCDg"
+}

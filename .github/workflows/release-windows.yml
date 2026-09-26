@@ -1,7 +1,10 @@
 name: Build and release Windows installer
 
-# Hands-off: tag a release on Dev-Autographs OR run this workflow manually.
-# Produces NSIS .exe and uploads to Dev-Autographs-Installer GitHub Releases.
+# Hands-off: push a v* tag here (the same tag must exist on Dev-Autographs), or run manually.
+# Produces the NSIS .exe and uploads it to this repo's GitHub Releases.
+#
+# The hosted registry URL is NOT configured here. It lives in Dev-Autographs/registry.json and
+# is baked into the desk, CLI and Tauri shell by `npm run registry:sync` (part of `npm run build`).
 
 on:
   workflow_dispatch:
@@ -11,7 +14,7 @@ on:
         required: true
         default: "master"
       version:
-        description: "Release tag (e.g. v0.1.1)"
+        description: "Release tag (e.g. v0.2.0)"
         required: true
   push:
     tags:
@@ -31,6 +34,11 @@ jobs:
           ref: ${{ github.event.inputs.code_ink_ref || github.ref_name }}
           path: dev-autographs
 
+      - name: Checkout installer repo (release notes)
+        uses: actions/checkout@v4
+        with:
+          path: installer
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -45,26 +53,37 @@ jobs:
         working-directory: dev-autographs
         run: npm ci
 
-      - name: Build monorepo
+      - name: Build monorepo (runs registry:sync first)
         working-directory: dev-autographs
         run: npm run build
 
       - name: Build Tauri NSIS installer
         working-directory: dev-autographs
-        env:
-          # Bake hosted registry into production Windows builds (override secret as needed)
-          VITE_DEV_AUTOGRAPHS_API: ${{ vars.DEV_AUTOGRAPHS_REGISTRY_URL || 'http://127.0.0.1:8787' }}
-        run: npm run tauri:build -w @dev-autographs/desktop
+        run: npm run tauri:build
 
-      - name: Find installer artifact
+      - name: Find installer artifact and hash it
         id: artifact
         working-directory: dev-autographs
         shell: pwsh
         run: |
           $exe = Get-ChildItem -Path "apps/desktop/src-tauri/target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
           if (-not $exe) { throw "NSIS installer not found" }
+          $hash = (Get-FileHash $exe.FullName -Algorithm SHA256).Hash
           "path=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "name=$($exe.Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "sha256=$hash" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "$hash  $($exe.Name)" | Out-File -FilePath "$($exe.FullName).sha256" -Encoding ascii
+
+      - name: Release body from CHANGELOG
+        id: notes
+        shell: pwsh
+        run: |
+          $tag = "${{ github.event.inputs.version || github.ref_name }}"
+          $md = Get-Content installer/CHANGELOG.md -Raw
+          $m = [regex]::Match($md, "(?s)## \[$([regex]::Escape($tag.TrimStart('v')))\][^\n]*\n(.*?)(?=\n## \[|\z)")
+          $body = if ($m.Success) { $m.Groups[1].Value.Trim() } else { "See CHANGELOG.md" }
+          $body += "`n`n**SHA-256** `${{ steps.artifact.outputs.sha256 }}`  `n_Built $(Get-Date -Format 'yyyy-MM-dd') UTC by GitHub Actions._"
+          Set-Content -Path release-body.md -Value $body
 
       - name: Publish to Dev-Autographs-Installer Releases
         uses: softprops/action-gh-release@v2
@@ -72,9 +91,10 @@ jobs:
           repository: Creal212/Dev-Autographs-Installer
           tag_name: ${{ github.event.inputs.version || github.ref_name }}
           name: Dev Autographs ${{ github.event.inputs.version || github.ref_name }}
-          files: ${{ steps.artifact.outputs.path }}
-          generate_release_notes: true
+          body_path: release-body.md
+          files: |
+            ${{ steps.artifact.outputs.path }}
+            ${{ steps.artifact.outputs.path }}.sha256
           token: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
-
