@@ -1,8 +1,8 @@
 {
   "version": "dev-autographs-report-v1",
   "repoFullName": "Creal212/Dev-Autographs-Installer",
-  "updatedAt": "2026-09-26T18:32:08.096Z",
-  "ledgerApi": "http://127.0.0.1:8787",
+  "updatedAt": "2026-09-26T18:46:07.880Z",
+  "ledgerApi": "https://dev-autographs-registry-production.up.railway.app",
   "codeMark": {
     "displayMark": "Creal589",
     "markFont": "'Special Elite', 'Courier New', monospace",
@@ -25,10 +25,24 @@
       "signer": "MCowBQYDK2VwAyEAkVgxjJxo2OdfihWNpLCsBoGLXI5_cumho7vRFNqsA24"
     },
     {
+      "path": "CHANGELOG.md",
+      "contentSha256": "8a06ef4b593862d9d03484044343ea33a93340b4a8bf2bc6641446e182bc4e82",
+      "displayMark": "Creal589",
+      "createdAt": "2026-09-26T18:46:07.776Z",
+      "signer": "MCowBQYDK2VwAyEAkVgxjJxo2OdfihWNpLCsBoGLXI5_cumho7vRFNqsA24"
+    },
+    {
       "path": "cli/cli.cjs",
       "contentSha256": "e8f0677c4293c30a423e65eb2be09d0e85c0507ec1ac1a9fb5cacc6d94eec487",
       "displayMark": "Creal589",
       "createdAt": "2026-09-26T18:32:08.010Z",
+      "signer": "MCowBQYDK2VwAyEAkVgxjJxo2OdfihWNpLCsBoGLXI5_cumho7vRFNqsA24"
+    },
+    {
+      "path": "cli/cli.cjs",
+      "contentSha256": "e759976c0765ba585b1eb8b31305370e04b38f823839b209c0faf29267882edf",
+      "displayMark": "Creal589",
+      "createdAt": "2026-09-26T18:46:07.819Z",
       "signer": "MCowBQYDK2VwAyEAkVgxjJxo2OdfihWNpLCsBoGLXI5_cumho7vRFNqsA24"
     },
     {
@@ -50,6 +64,13 @@
       "contentSha256": "7de8b1ae41e79fcee1e5af9ab289ac96e44c808bf2c1209a3792a094612e64dc",
       "displayMark": "Creal589",
       "createdAt": "2026-09-26T18:32:07.987Z",
+      "signer": "MCowBQYDK2VwAyEAkVgxjJxo2OdfihWNpLCsBoGLXI5_cumho7vRFNqsA24"
+    },
+    {
+      "path": "README.md",
+      "contentSha256": "36b06299ad1bb4bd1ebc187f387a1b301d949b1dd544337bb8f0fa8c45ed00b6",
+      "displayMark": "Creal589",
+      "createdAt": "2026-09-26T18:46:07.800Z",
       "signer": "MCowBQYDK2VwAyEAkVgxjJxo2OdfihWNpLCsBoGLXI5_cumho7vRFNqsA24"
     }
   ],
@@ -75,5 +96,5 @@
       }
     ]
   },
-  "buildHash": "e5e2999162f294d8d05a787066aa5b5088d9ba60d148dbe31d2161fb28efc80f"
+  "buildHash": "703d77e49dd3546860691636fb8f7c885e2b978cecc24b22d1a4ab1255d6b546"
 }

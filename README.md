@@ -1,10 +1,10 @@
-﻿# Dev Autographs Installer
+# Dev Autographs Installer
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
 **Latest installer posted: 2026-09-26 (v0.2.0).** See [CHANGELOG.md](CHANGELOG.md) for what changed.
 
-- Download v0.2.0 (4.8 MB): [releases/v0.2.0/](releases/v0.2.0/) in this repo. SHA-256 `391C74E9647959FB5AA673D02F168D6D8A332B6ABCD6AE78DC55E93DDB899EA6`.
+- Download v0.2.0 (4.8 MB): [releases/v0.2.0/](releases/v0.2.0/) in this repo. SHA-256 `E9C725EB9AF22D0649F4316B112C03DB24D5486D90894BA618A4C99115409175`.
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
 - Website and web desk: https://github.com/Creal212/Dev-Autographs-Website (`/desk.html`)
 - App, CLI and registry source: https://github.com/Creal212/Dev-Autographs
@@ -56,7 +56,7 @@ Get-FileHash .\Dev-Autographs_*_x64-setup.exe -Algorithm SHA256
 2. In **this repo**: add the `## [X.Y.Z] - YYYY-MM-DD` section to `CHANGELOG.md` (include the date the installer is posted), copy the freshly built `packages/cli/bin/cli.cjs` and `paw-prints.cjs` into `cli/`, drop the locally built `.exe` and its `.sha256` under `releases/vX.Y.Z/`, update the download line at the top of this README, commit, `git tag vX.Y.Z`, push branch and tag.
 3. The **Build and release Windows installer** workflow builds Dev-Autographs at that tag, attaches the `.exe` and `.sha256`, and uses the changelog section as the release body.
 
-Manual alternative: **Actions → Build and release Windows installer → Run workflow** with the ref and version.
+Manual alternative: **Actions ? Build and release Windows installer ? Run workflow** with the ref and version.
 
 ### Moving the registry
 

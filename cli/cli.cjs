@@ -335,15 +335,6 @@ function parseRepoFullName(remote) {
 function resolveLedgerApi(fallback = HOSTED_REGISTRY) {
   const env = process.env.DEV_AUTOGRAPHS_REGISTRY || process.env.CODEINK_REGISTRY || process.env.PAWPRINTS_API;
   if (env?.trim()) return env.trim().replace(/\/$/, "");
-  try {
-    const raw = (0, import_node_fs.readFileSync)(
-      import_node_path.default.join(import_node_os.default.homedir(), ".dev-autographs", "settings.json"),
-      "utf8"
-    );
-    const j = JSON.parse(raw.replace(/^\uFEFF/, ""));
-    if (j.apiBase?.trim()) return j.apiBase.trim().replace(/\/$/, "");
-  } catch {
-  }
   return fallback.replace(/\/$/, "");
 }
 async function readPkgDeps(cwd) {
@@ -2117,15 +2108,15 @@ function clawPath() {
 function hookScripts(cli) {
   const preCommit = `#!/bin/sh
 # Dev Autographs \u2014 seal staged source files before commit
-node "${cli}" seal-staged || exit 1
+${NODE_TLS_ENV} node "${cli}" seal-staged || exit 1
 `;
   const postCommit = `#!/bin/sh
 # Dev Autographs \u2014 detect signed\u2192unsigned once (further unsigned churn stays quiet)
-node "${cli}" detect-unsigned || true
+${NODE_TLS_ENV} node "${cli}" detect-unsigned || true
 `;
   const prePush = `#!/bin/sh
 # Dev Autographs \u2014 seal + publish fingerprints to ledger on push
-node "${cli}" seal-push || exit 1
+${NODE_TLS_ENV} node "${cli}" seal-push || exit 1
 `;
   return {
     preCommit: preCommit.replace(/\r\n/g, "\n"),
@@ -2530,6 +2521,13 @@ async function sealAndPublishPush(loadIdentity2, sealPathFor2, sealsDir2, apiBas
         console.error("  Open Dev Autographs and Ink again here to take the seat back, or push with PAWPRINTS_ALLOW_OFFLINE_PUSH=1.");
       } else {
         console.error(`Dev Autographs: ledger publish failed: ${data.error_description ?? data.error ?? res.status}`);
+        if (data.error === "unknown_signer") {
+          console.error("  Open Dev Autographs (or the web desk) and Ink again, or push with PAWPRINTS_ALLOW_OFFLINE_PUSH=1.");
+        }
+      }
+      if (process.env.PAWPRINTS_ALLOW_OFFLINE_PUSH === "1") {
+        console.error("  PAWPRINTS_ALLOW_OFFLINE_PUSH=1 set: pushing without publishing.");
+        return;
       }
       process.exitCode = 1;
       return;
@@ -2556,7 +2554,7 @@ async function sealAndPublishPush(loadIdentity2, sealPathFor2, sealsDir2, apiBas
   } catch {
   }
 }
-var import_node_child_process3, import_promises4, import_node_fs3, import_node_path4, import_node_os4, SEALABLE, SKIP;
+var import_node_child_process3, import_promises4, import_node_fs3, import_node_path4, import_node_os4, NODE_TLS_ENV, SEALABLE, SKIP;
 var init_hooks = __esm({
   "src/hooks.ts"() {
     "use strict";
@@ -2567,6 +2565,7 @@ var init_hooks = __esm({
     import_node_os4 = __toESM(require("node:os"), 1);
     init_dist2();
     init_report();
+    NODE_TLS_ENV = "NODE_USE_SYSTEM_CA=1";
     SEALABLE = /\.(ts|tsx|js|jsx|mjs|cjs|css|scss|html|htm|md|py|go|rs|java|kt|swift|cs|rb|php|vue|svelte|astro|ejs|njk|hbs)$/i;
     SKIP = /(^|\/)(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|provenance\.json|\.pawprints\/)/i;
   }
@@ -2712,6 +2711,9 @@ var init_agent = __esm({
     AGENT_LOG = import_node_path5.default.join(HOME, "agent.log");
   }
 });
+
+// src/index.ts
+var import_node_child_process5 = require("node:child_process");
 
 // src/main.ts
 var import_promises6 = require("node:fs/promises");
@@ -2969,16 +2971,7 @@ async function cmdVerifyAttestation(args) {
     console.log(`  - ${c.displayMark} ${(c.weight * 100).toFixed(1)}% [${c.trustLevel}]`);
   }
 }
-function apiFromSettings() {
-  try {
-    const raw = (0, import_node_fs5.readFileSync)(import_node_path6.default.join(import_node_os6.default.homedir(), ".dev-autographs", "settings.json"), "utf8");
-    const v = JSON.parse(raw.replace(/^\uFEFF/, ""));
-    return v.apiBase?.trim() || void 0;
-  } catch {
-    return void 0;
-  }
-}
-var DEFAULT_API = process.env.DEV_AUTOGRAPHS_REGISTRY ?? process.env.CODEINK_REGISTRY ?? process.env.PAWPRINTS_API ?? apiFromSettings() ?? HOSTED_REGISTRY;
+var DEFAULT_API = process.env.DEV_AUTOGRAPHS_REGISTRY ?? process.env.CODEINK_REGISTRY ?? process.env.PAWPRINTS_API ?? HOSTED_REGISTRY;
 function help() {
   console.log(`Dev Autographs CLI \u2014 local agent + public ledger
 
@@ -3004,7 +2997,7 @@ Usage:
   dev-autographs detect-unsigned    Report signed\u2192unsigned once (post-commit hook)
   dev-autographs summary-mirror     Mirror personal summary to ~/.dev-autographs (+ optional gist)
 
-One GitHub per device. Identity: ~/.dev-autographs/identity.json
+One GitHub per install (last Ink wins). Identity: ~/.dev-autographs/identity.json
 Personal summary: ~/.dev-autographs/summary.json (gist token: ~/.dev-autographs/github-summary.json)
 Ledger: hashes + marks + dates only \u2014 never source
 `);
@@ -3208,6 +3201,28 @@ async function cmdDoctor() {
     console.log("\u2717 No identity. Run: paw-prints login");
   }
   try {
+    const res = await fetch(`${DEFAULT_API}/health`, { signal: AbortSignal.timeout(3e3) });
+    console.log(`${res.ok ? "\u2713" : "\u2717"} Registry: ${DEFAULT_API}${res.ok ? "" : ` (HTTP ${res.status})`}`);
+    if (res.ok) {
+      try {
+        const id = await loadIdentity();
+        const seat = await fetch(
+          `${DEFAULT_API}/v1/auth/device/status?public_key=${encodeURIComponent(id.publicKey)}`,
+          { signal: AbortSignal.timeout(3e3) }
+        );
+        const j = await seat.json();
+        if (j.status === "active") console.log("\u2713 Signer seat: this device is the signer for the account");
+        else if (j.status === "replaced")
+          console.log(`\u2717 Signer seat: moved to another device (${j.replacedAt ?? "unknown time"}). Run: paw-prints login`);
+        else if (j.status === "disabled") console.log("\u25CB Signer seat: key disabled (unlinked). Run: paw-prints login");
+        else if (j.status === "unknown") console.log("\u25CB Signer seat: key not known to the registry. Run: paw-prints login");
+      } catch {
+      }
+    }
+  } catch {
+    console.log(`\u2717 Registry unreachable: ${DEFAULT_API} (offline? hooks still seal, publish retries on next push)`);
+  }
+  try {
     const hooksPath = git4(["config", "--global", "--get", "core.hooksPath"]);
     console.log(`\u2713 Global hooksPath (all repos): ${hooksPath}`);
   } catch {
@@ -3249,7 +3264,8 @@ async function cmdDoctor() {
   }
   console.log(`
 Tips:
-  \u2022 One GitHub per device \u2014 unlink before linking another: paw-prints unlink
+  \u2022 One GitHub per install. Ink on another device moves the signer seat there; this one is warned and stops signing.
+  \u2022 Autograph words and ledger history stay with the GitHub account across devices.
   \u2022 Background hook health: paw-prints agent
   \u2022 Pushes publish fingerprints to the ledger (never source)
   \u2022 install-hooks --global enables sealing in every repo via core.hooksPath
@@ -3557,7 +3573,20 @@ async function main(argv = process.argv.slice(2)) {
 }
 
 // src/index.ts
-main().catch((err) => {
-  console.error(err instanceof Error ? err.message : err);
-  process.exitCode = 1;
-});
+function relaunchWithSystemCa() {
+  if (process.env.NODE_USE_SYSTEM_CA || process.env.DEV_AUTOGRAPHS_NO_SYSTEM_CA) return false;
+  if (process.execArgv.includes("--use-system-ca")) return false;
+  if (!process.allowedNodeEnvironmentFlags.has("--use-system-ca")) return false;
+  const r = (0, import_node_child_process5.spawnSync)(process.execPath, ["--use-system-ca", ...process.execArgv, ...process.argv.slice(1)], {
+    stdio: "inherit",
+    env: { ...process.env, NODE_USE_SYSTEM_CA: "1" }
+  });
+  process.exitCode = r.status ?? 1;
+  return true;
+}
+if (!relaunchWithSystemCa()) {
+  main().catch((err) => {
+    console.error(err instanceof Error ? err.message : err);
+    process.exitCode = 1;
+  });
+}

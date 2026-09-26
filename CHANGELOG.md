@@ -6,7 +6,7 @@ Dates are the day the installer was posted (UTC). Format follows Keep a Changelo
 ## [0.2.0] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.0` on Dev-Autographs and Dev-Autographs-Installer.
-File: `releases/v0.2.0/Dev-Autographs_0.2.0_x64-setup.exe` (4.8 MB), SHA-256 `391C74E9647959FB5AA673D02F168D6D8A332B6ABCD6AE78DC55E93DDB899EA6`.
+File: `releases/v0.2.0/Dev-Autographs_0.2.0_x64-setup.exe` (4.8 MB), SHA-256 `E9C725EB9AF22D0649F4316B112C03DB24D5486D90894BA618A4C99115409175`.
 
 ### Accounts: last Ink wins
 - One GitHub account, any device. Inking on a new device takes the signer seat; the registry records the old key under `keyHistory` on the account.
@@ -39,7 +39,14 @@ File: `releases/v0.2.0/Dev-Autographs_0.2.0_x64-setup.exe` (4.8 MB), SHA-256 `39
 
 ### Desk
 - UI refreshes after Ink, Save and lock, and on window focus. No manual refresh needed.
+- The installer now ships the CLI (`cli.cjs`, `paw-prints.cjs`) next to the exe. 0.1.0 installs could not install hooks because the desk looked for a CLI that was never packaged.
 - Version 0.2.0.
+
+### CLI and hooks
+- Node is started with `NODE_USE_SYSTEM_CA=1` (hooks, desk, and a self re-exec when run by hand) so it trusts the Windows/macOS certificate store. Antivirus HTTPS scanners such as Norton re-sign TLS with a local root; before this every registry call failed with `UNABLE_TO_VERIFY_LEAF_SIGNATURE` and pushes sealed but never published.
+- `~/.dev-autographs/settings.json` `apiBase` is ignored. The registry comes from `registry.json` only; maintainers use `DEV_AUTOGRAPHS_REGISTRY=` in the shell for local testing.
+- `doctor` prints registry reachability and whether this device still holds the signer seat.
+- `PAWPRINTS_ALLOW_OFFLINE_PUSH=1` now also lets a push through when the registry rejects the publish (`unknown_signer`, `signer_replaced`), as the hook message already claimed.
 
 ### Installer repo
 - `cli/cli.cjs` and `cli/paw-prints.cjs` are published here so the web desk setup script can fetch them.
