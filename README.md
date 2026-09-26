@@ -1,4 +1,4 @@
-# Dev Autographs Installer
+﻿# Dev Autographs Installer
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
@@ -50,13 +50,13 @@ Get-FileHash .\Dev-Autographs_*_x64-setup.exe -Algorithm SHA256
 
 `cli/cli.cjs` and `cli/paw-prints.cjs` are the bundled command line, identical to the one inside the installer. The web desk's setup script downloads them from this repo (`main` branch, raw) into `~/.dev-autographs/cli/` and runs `install-hooks --global`. Keep them in step with each release.
 
-## Releasing (hands-off)
+## Releasing
 
-1. In **Dev-Autographs**: bump `apps/desktop/package.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`; commit; `git tag vX.Y.Z`; push branch and tag.
-2. In **this repo**: add the `## [X.Y.Z] - YYYY-MM-DD` section to `CHANGELOG.md` (include the date the installer is posted), copy the freshly built `packages/cli/bin/cli.cjs` and `paw-prints.cjs` into `cli/`, drop the locally built `.exe` and its `.sha256` under `releases/vX.Y.Z/`, update the download line at the top of this README, commit, `git tag vX.Y.Z`, push branch and tag.
-3. The **Build and release Windows installer** workflow builds Dev-Autographs at that tag, attaches the `.exe` and `.sha256`, and uses the changelog section as the release body.
+1. In **Dev-Autographs**: bump `apps/desktop/package.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`; `npm run tauri:build`; commit; `git tag vX.Y.Z`; push branch and tag.
+2. In **this repo**: add the `## [X.Y.Z] - YYYY-MM-DD` section to `CHANGELOG.md` (include the date the installer is posted), copy the freshly built `packages/cli/bin/cli.cjs` and `paw-prints.cjs` into `cli/`, copy the built `.exe` to `releases/vX.Y.Z/Dev-Autographs_X.Y.Z_x64-setup.exe` and write its `.sha256` next to it (`Get-FileHash -Algorithm SHA256`), update the download line at the top of this README, commit, `git tag vX.Y.Z`, push branch and tag.
+3. The tag push runs **Build and release Windows installer**, job `publish-prebuilt`: it creates the GitHub Release from the committed `.exe` and `.sha256` with the changelog section as the body. No secrets needed.
 
-Manual alternative: **Actions ? Build and release Windows installer ? Run workflow** with the ref and version.
+Building on GitHub instead: **Actions > Build and release Windows installer > Run workflow** with the Dev-Autographs ref and the version. Dev-Autographs is a private repo, so this path needs a repo secret `INSTALLER_RELEASE_TOKEN` (fine-grained PAT, Contents: read on Dev-Autographs, Contents: write here).
 
 ### Moving the registry
 

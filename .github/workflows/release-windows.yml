@@ -1,7 +1,15 @@
 name: Build and release Windows installer
 
-# Hands-off: push a v* tag here (the same tag must exist on Dev-Autographs), or run manually.
-# Produces the NSIS .exe and uploads it to this repo's GitHub Releases.
+# Two ways a release gets published here:
+#
+# 1. Tag push (v*): the job "publish-prebuilt" takes the installer already committed under
+#    releases/<tag>/ (built locally with `npm run tauri:build`, hash in the .sha256 file) and
+#    creates the GitHub Release with notes from CHANGELOG.md. No secrets needed.
+#
+# 2. Manual run (workflow_dispatch): the job "windows-installer" builds the desk from the
+#    Dev-Autographs repo on a Windows runner and publishes the result. Dev-Autographs is private,
+#    so this needs a repo secret INSTALLER_RELEASE_TOKEN (fine-grained PAT with Contents: read
+#    on Dev-Autographs and Contents: write on this repo).
 #
 # The hosted registry URL is NOT configured here. It lives in Dev-Autographs/registry.json and
 # is baked into the desk, CLI and Tauri shell by `npm run registry:sync` (part of `npm run build`).
@@ -12,7 +20,7 @@ on:
       code_ink_ref:
         description: "Dev-Autographs git ref (branch/tag/SHA)"
         required: true
-        default: "master"
+        default: "main"
       version:
         description: "Release tag (e.g. v0.2.0)"
         required: true
@@ -24,15 +32,63 @@ permissions:
   contents: write
 
 jobs:
+  publish-prebuilt:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout installer repo
+        uses: actions/checkout@v4
+
+      - name: Locate committed installer for this tag
+        id: files
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          dir="releases/${tag}"
+          exe=$(ls "${dir}"/*.exe 2>/dev/null | head -n1 || true)
+          if [ -z "$exe" ]; then
+            echo "No installer committed under ${dir}. Run the workflow manually to build one." >&2
+            exit 1
+          fi
+          echo "exe=${exe}" >> "$GITHUB_OUTPUT"
+          echo "sha=${exe}.sha256" >> "$GITHUB_OUTPUT"
+          echo "hash=$(cut -d' ' -f1 "${exe}.sha256")" >> "$GITHUB_OUTPUT"
+
+      - name: Release body from CHANGELOG
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          ver="${tag#v}"
+          awk -v ver="$ver" '
+            $0 ~ "^## \\[" ver "\\]" { on=1; next }
+            on && /^## \[/ { exit }
+            on { print }
+          ' CHANGELOG.md > release-body.md
+          if [ ! -s release-body.md ]; then echo "See CHANGELOG.md" > release-body.md; fi
+          printf '\n\n**SHA-256** `%s`  \n_Published %s UTC from the installer committed in this repo._\n' \
+            "${{ steps.files.outputs.hash }}" "$(date -u +%Y-%m-%d)" >> release-body.md
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Dev Autographs ${{ github.ref_name }}
+          body_path: release-body.md
+          files: |
+            ${{ steps.files.outputs.exe }}
+            ${{ steps.files.outputs.sha }}
+
   windows-installer:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     steps:
       - name: Checkout Dev-Autographs
         uses: actions/checkout@v4
         with:
           repository: Creal212/Dev-Autographs
-          ref: ${{ github.event.inputs.code_ink_ref || github.ref_name }}
+          ref: ${{ github.event.inputs.code_ink_ref }}
           path: dev-autographs
+          token: ${{ secrets.INSTALLER_RELEASE_TOKEN }}
 
       - name: Checkout installer repo (release notes)
         uses: actions/checkout@v4
@@ -78,7 +134,7 @@ jobs:
         id: notes
         shell: pwsh
         run: |
-          $tag = "${{ github.event.inputs.version || github.ref_name }}"
+          $tag = "${{ github.event.inputs.version }}"
           $md = Get-Content installer/CHANGELOG.md -Raw
           $m = [regex]::Match($md, "(?s)## \[$([regex]::Escape($tag.TrimStart('v')))\][^\n]*\n(.*?)(?=\n## \[|\z)")
           $body = if ($m.Success) { $m.Groups[1].Value.Trim() } else { "See CHANGELOG.md" }
@@ -89,8 +145,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           repository: Creal212/Dev-Autographs-Installer
-          tag_name: ${{ github.event.inputs.version || github.ref_name }}
-          name: Dev Autographs ${{ github.event.inputs.version || github.ref_name }}
+          tag_name: ${{ github.event.inputs.version }}
+          name: Dev Autographs ${{ github.event.inputs.version }}
           body_path: release-body.md
           files: |
             ${{ steps.artifact.outputs.path }}
