@@ -1,9 +1,9 @@
 {
   "version": "pawprints-seal-v1",
-  "contentSha256": "10687d2a0723d306c760ac9f0587b82536fb75d1c3700801ac7185d85d9b721a",
+  "contentSha256": "9d1f6af04a1c374eaba5a9d2797d898abb6f1550b6f9365579750496fbf46ea4",
   "path": "README.md",
   "signer": "MCowBQYDK2VwAyEAQrPeRC-Z7vTfDPfhAGq99yitajp2fZpUmo7jk_5Ld20",
   "displayMark": "Creal589",
-  "createdAt": "2026-09-26T22:01:44.204Z",
-  "signature": "FxQMx4RDdh3y5BuyVKwU3T1VFFsj55C9IQz8eBeYDudCtHxYZ48xP8pPE0b8Zt5Z5JPKne1Lhf9ynuH2mvUqAQ"
+  "createdAt": "2026-09-26T22:11:56.297Z",
+  "signature": "6P7nS1jF3p8UZabeeiIseC6mzEIPqggFETXhOJe_OF_H8uHv-MwS_dAC2a_gx19zy79Msn6ZkBnsecl2jrs5AA"
 }

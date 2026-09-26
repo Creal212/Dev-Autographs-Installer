@@ -3,6 +3,17 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.4] - 2026-09-26
+
+Installer posted: **2026-09-26**. Tag `v0.2.4` on Dev-Autographs and Dev-Autographs-Installer.
+File: `releases/v0.2.4/Dev-Autographs_0.2.4_x64-setup.exe` (5.3 MB), SHA-256 `E5686D0FAA7AE5AA5D9EC50FD4C843B9BCC46D1C692F68CFF8B2569D4E96E085`.
+
+### Desk runs from any install drive
+- CLI spawn resolves absolute `node.exe` + `cli.cjs` next to the desk on any drive (C:, D:, E:, USB, paths with spaces). No more drive-letter `EISDIR` when saving marks.
+
+### Signatures: starter only for new accounts
+- Starter initials apply only when the account has **no attached (locked) signature**.
+- If a signature is already attached to the account, the desk and web desk show it and do not add, change, or reset it to defaults.
 ## [0.2.3] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.3` on Dev-Autographs and Dev-Autographs-Installer.
