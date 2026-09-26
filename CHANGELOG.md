@@ -5,7 +5,8 @@ Dates are the day the installer was posted (UTC). Format follows Keep a Changelo
 
 ## [0.2.2] - 2026-09-26
 
-Installer posted: **2026-09-26**. Tag `v0.2.2` (build from Dev-Autographs after NSIS hooks land).
+Installer posted: **2026-09-26**. Tag `v0.2.2` on Dev-Autographs and Dev-Autographs-Installer.
+File: `releases/v0.2.2/Dev-Autographs_0.2.2_x64-setup.exe` (5.3 MB), SHA-256 `D3C18D60834B081C3778A3C480ACC440F87B3D75C4A9206F6B1C5E9075528016`.
 
 ### Installer: update vs fresh vs uninstall
 - **Update** (app already present): wizard copy and a pre-install note make clear only program files are replaced. `%USERPROFILE%\.dev-autographs` (identity, locked marks, ledger cache, settings) is never overwritten.
@@ -14,6 +15,15 @@ Installer posted: **2026-09-26**. Tag `v0.2.2` (build from Dev-Autographs after 
 
 ### Installer look
 - Wizard header and welcome sidebar redrawn in the Exercise Book palette (cream ruled page, vermilion margin, stamp icon) to match the desk app.
+
+### Registry: durable store and sync
+- Production registry requires `DATABASE_URL` (Postgres). Without it, boot fails closed so marks and ledger cannot wipe on redeploy. `/v1/public-config` reports `"durableStore": true` when healthy.
+- Marks and account summary sync across devices after Ink (`/v1/accounts/summary` + device token). Same locked words and ledger on app and web desk.
+- Per-user rate limits (generous) sit on top of per-IP buckets so one busy account does not starve others.
+
+### Web desk
+- Early “go to desk” no longer races the Ink return: pending link is kept in localStorage, the opener is focused, and resume polling keeps the session linked if you leave before the token lands.
+- Paper stock follows time of day when theme is **auto** (light 6am–6pm local, kraft at night) — same behavior as the desktop desk.
 
 ## [0.2.1] - 2026-09-26
 

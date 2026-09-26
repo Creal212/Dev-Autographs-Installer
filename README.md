@@ -2,9 +2,9 @@
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
-**Latest installer posted: 2026-09-26 (v0.2.1).** See [CHANGELOG.md](CHANGELOG.md) for what changed. **v0.2.2** adds clearer Update / Fresh install / Uninstall behavior (keeps `%USERPROFILE%\.dev-autographs` on update; uninstall asks to close running sessions first) — rebuild and post the `.exe` from Dev-Autographs `apps/desktop` after tagging.
+**Latest installer posted: 2026-09-26 (v0.2.2).** See [CHANGELOG.md](CHANGELOG.md) for what changed. Update / Fresh / Uninstall keep `%USERPROFILE%\.dev-autographs`; Exercise Book–themed wizard; durable Postgres registry; marks sync; web Ink resume fix; auto paper stock by time of day.
 
-- Download v0.2.1 (5.3 MB): [releases/v0.2.1/](releases/v0.2.1/) in this repo. SHA-256 `F9A92CC517A50C81B3FD95D58B540DB9EF1C63176C52F69F4E2FCD3ECF0257CD`.
+- Download v0.2.2 (5.3 MB): [releases/v0.2.2/](releases/v0.2.2/) in this repo. SHA-256 `D3C18D60834B081C3778A3C480ACC440F87B3D75C4A9206F6B1C5E9075528016`.
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
 - Website and web desk: https://www.devautographs.com · [web desk](https://www.devautographs.com/desk.html)
 - App, CLI and registry source: https://github.com/Creal212/Dev-Autographs

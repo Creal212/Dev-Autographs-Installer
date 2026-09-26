@@ -1,7 +1,7 @@
 {
   "version": "dev-autographs-report-v1",
   "repoFullName": "Creal212/Dev-Autographs-Installer",
-  "updatedAt": "2026-09-26T21:31:21.052Z",
+  "updatedAt": "2026-09-26T21:35:40.060Z",
   "ledgerApi": "https://dev-autographs-registry-production.up.railway.app",
   "codeMark": {
     "displayMark": "CR",
@@ -38,6 +38,13 @@
       "signer": "MCowBQYDK2VwAyEAVhSKbebOtNJ35dS2pCscMt3d1pIMjyyvrFz2feO3rQ8"
     },
     {
+      "path": "CHANGELOG.md",
+      "contentSha256": "a5540d98f93de4f9a3f16bb02c1e0a0ef09e6fb810bb5995197fcf3adfeed407",
+      "displayMark": "CR",
+      "createdAt": "2026-09-26T21:35:39.949Z",
+      "signer": "MCowBQYDK2VwAyEAVhSKbebOtNJ35dS2pCscMt3d1pIMjyyvrFz2feO3rQ8"
+    },
+    {
       "path": "cli/cli.cjs",
       "contentSha256": "e8f0677c4293c30a423e65eb2be09d0e85c0507ec1ac1a9fb5cacc6d94eec487",
       "displayMark": "Creal589",
@@ -50,6 +57,13 @@
       "displayMark": "Creal589",
       "createdAt": "2026-09-26T18:46:07.819Z",
       "signer": "MCowBQYDK2VwAyEAkVgxjJxo2OdfihWNpLCsBoGLXI5_cumho7vRFNqsA24"
+    },
+    {
+      "path": "cli/cli.cjs",
+      "contentSha256": "8a0206136eb78bd4dd4cf728d52f83eef06f021994998163bd56b947ebfc559e",
+      "displayMark": "CR",
+      "createdAt": "2026-09-26T21:35:39.992Z",
+      "signer": "MCowBQYDK2VwAyEAVhSKbebOtNJ35dS2pCscMt3d1pIMjyyvrFz2feO3rQ8"
     },
     {
       "path": "cli/paw-prints.cjs",
@@ -99,20 +113,27 @@
       "displayMark": "CR",
       "createdAt": "2026-09-26T21:27:21.551Z",
       "signer": "MCowBQYDK2VwAyEAVhSKbebOtNJ35dS2pCscMt3d1pIMjyyvrFz2feO3rQ8"
+    },
+    {
+      "path": "README.md",
+      "contentSha256": "5f9a7474292d20a468608cc684e67840ac63cdf52111a20f298d95f88d156a5d",
+      "displayMark": "CR",
+      "createdAt": "2026-09-26T21:35:39.973Z",
+      "signer": "MCowBQYDK2VwAyEAVhSKbebOtNJ35dS2pCscMt3d1pIMjyyvrFz2feO3rQ8"
     }
   ],
   "contributors": [
     {
       "displayMark": "CR",
       "trustLevel": "L2",
-      "weight": 0.5,
-      "sealedFiles": 2
+      "weight": 0.75,
+      "sealedFiles": 3
     },
     {
       "displayMark": "Creal589",
       "trustLevel": "L2",
-      "weight": 0.5,
-      "sealedFiles": 2
+      "weight": 0.25,
+      "sealedFiles": 1
     }
   ],
   "honor": {
@@ -122,17 +143,17 @@
     "ranking": [
       {
         "displayMark": "CR",
-        "sealedFiles": 2,
-        "percent": 50,
+        "sealedFiles": 3,
+        "percent": 75,
         "rank": 1
       },
       {
         "displayMark": "Creal589",
-        "sealedFiles": 2,
-        "percent": 50,
+        "sealedFiles": 1,
+        "percent": 25,
         "rank": 2
       }
     ]
   },
-  "buildHash": "1b4ba8b5791f5b55785214ddfe96fc953ff03fd07bd88e35fab9f4e17f230f7d"
+  "buildHash": "bff8728bc1ea9918b9ff0028c9792b8c44ff76404f36d1221fe8e3cdb091f1cc"
 }
