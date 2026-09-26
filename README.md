@@ -2,13 +2,21 @@
 
 Windows **NSIS** packaging and GitHub Releases for [Code Ink](https://github.com/Creal212/Code-Ink).
 
-This repo does **not** contain the app source. It holds:
+This repo does **not** contain the app source. It holds release tags and `.exe` downloads.
 
-- Release notes / version tags
-- Built `.exe` installers (via GitHub Releases — do not commit large binaries to `main` unless needed)
-- Optional CI that builds from `Code-Ink` and publishes here
+## Hands-off release (CI)
 
-## Build (from Code-Ink monorepo)
+1. Open **Actions → Build and release Windows installer → Run workflow**
+2. Set `code_ink_ref` (e.g. `master`) and `version` (e.g. `v0.1.1`)
+3. CI clones Code-Ink, builds Tauri NSIS, uploads to this repo’s Releases
+
+Or push a `v*` tag on Code-Ink if you mirror that workflow there.
+
+Optional GitHub Actions variable on this repo:
+
+- `CODEINK_REGISTRY_URL` — baked into the desktop build as `VITE_CODEINK_API`
+
+## Manual build
 
 ```bash
 git clone https://github.com/Creal212/Code-Ink.git
@@ -17,24 +25,17 @@ npm install && npm run build
 npm run tauri:build -w @code-ink/desktop
 ```
 
-Installer output:
-
-`apps/desktop/src-tauri/target/release/bundle/nsis/*.exe`
-
-Attach that file to a [Release](https://github.com/Creal212/Code-Ink-Installer/releases) on this repo.
+Upload `apps/desktop/src-tauri/target/release/bundle/nsis/*.exe` to a Release here.
 
 ## Download
 
-End users should use:
-
 https://github.com/Creal212/Code-Ink-Installer/releases/latest
-
-The marketing / device-login site is [Code-Ink-Website](https://github.com/Creal212/Code-Ink-Website).
 
 ## Repos
 
 | Repo | Role |
 |---|---|
-| [Code-Ink](https://github.com/Creal212/Code-Ink) | Main product (desktop + CLI + ledger) |
-| [Code-Ink-Website](https://github.com/Creal212/Code-Ink-Website) | Installer website |
-| [Code-Ink-Installer](https://github.com/Creal212/Code-Ink-Installer) | This repo — releases |
+| [Code-Ink](https://github.com/Creal212/Code-Ink) | App + CLI |
+| [Code-Ink-Backend-Registry](https://github.com/Creal212/Code-Ink-Backend-Registry) | Shared marks / locks |
+| [Code-Ink-Website](https://github.com/Creal212/Code-Ink-Website) | Download + device login link |
+| [Code-Ink-Installer](https://github.com/Creal212/Code-Ink-Installer) | This repo — releases only |
