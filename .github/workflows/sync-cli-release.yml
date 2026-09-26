@@ -1,0 +1,58 @@
+name: Sync CLI to latest release
+
+# Whenever cli/ is updated on main (usually as part of posting a new installer),
+# attach those files to the latest GitHub Release so web desk setup scripts that
+# fetch releases/latest/download/{cli.cjs,paw-prints.cjs,VERSION} stay current
+# even before the next tag is cut.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cli/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Require CLI bundle
+        shell: bash
+        run: |
+          test -f cli/cli.cjs
+          test -f cli/paw-prints.cjs
+          if [ ! -f cli/VERSION ]; then
+            echo "0.0.0-dev" > cli/VERSION
+          fi
+
+      - name: Resolve latest release tag
+        id: latest
+        shell: bash
+        run: |
+          tag=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+          if [ -z "$tag" ] || [ "$tag" = "null" ]; then
+            echo "No GitHub Release yet — skipping upload."
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "skip=0" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload CLI onto latest release
+        if: steps.latest.outputs.skip != '1'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.latest.outputs.tag }}
+          files: |
+            cli/cli.cjs
+            cli/paw-prints.cjs
+            cli/VERSION
+          fail_on_unmatched_files: true

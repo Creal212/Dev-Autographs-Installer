@@ -5,6 +5,8 @@ name: Build and release Windows installer
 # 1. Tag push (v*): the job "publish-prebuilt" takes the installer already committed under
 #    releases/<tag>/ (built locally with `npm run tauri:build`, hash in the .sha256 file) and
 #    creates the GitHub Release with notes from CHANGELOG.md. No secrets needed.
+#    Also attaches cli/cli.cjs + cli/paw-prints.cjs + cli/VERSION so the web desk
+#    Windows (.ps1) / macOS-Linux (.sh) setup scripts stay in step with this installer.
 #
 # 2. Manual run (workflow_dispatch): the job "windows-installer" builds the desk from the
 #    Dev-Autographs repo on a Windows runner and publishes the result. Dev-Autographs is private,
@@ -44,12 +46,19 @@ jobs:
         shell: bash
         run: |
           tag="${GITHUB_REF_NAME}"
+          ver="${tag#v}"
           dir="releases/${tag}"
           exe=$(ls "${dir}"/*.exe 2>/dev/null | head -n1 || true)
           if [ -z "$exe" ]; then
             echo "No installer committed under ${dir}. Run the workflow manually to build one." >&2
             exit 1
           fi
+          if [ ! -f cli/cli.cjs ] || [ ! -f cli/paw-prints.cjs ]; then
+            echo "cli/cli.cjs and cli/paw-prints.cjs are required so web desk setup scripts stay current." >&2
+            exit 1
+          fi
+          # Stamp VERSION to match this tag (web desk .ps1/.sh print it).
+          printf '%s\n' "$ver" > cli/VERSION
           echo "exe=${exe}" >> "$GITHUB_OUTPUT"
           echo "sha=${exe}.sha256" >> "$GITHUB_OUTPUT"
           echo "hash=$(cut -d' ' -f1 "${exe}.sha256")" >> "$GITHUB_OUTPUT"
@@ -67,8 +76,9 @@ jobs:
           if [ ! -s release-body.md ]; then echo "See CHANGELOG.md" > release-body.md; fi
           printf '\n\n**SHA-256** `%s`  \n_Published %s UTC from the installer committed in this repo._\n' \
             "${{ steps.files.outputs.hash }}" "$(date -u +%Y-%m-%d)" >> release-body.md
+          printf '\nWeb desk setup (.ps1 / .sh) installs **cli.cjs** from this release (same build).\n' >> release-body.md
 
-      - name: Publish release
+      - name: Publish release (installer + CLI for web desk setups)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
@@ -77,6 +87,9 @@ jobs:
           files: |
             ${{ steps.files.outputs.exe }}
             ${{ steps.files.outputs.sha }}
+            cli/cli.cjs
+            cli/paw-prints.cjs
+            cli/VERSION
 
   windows-installer:
     if: github.event_name == 'workflow_dispatch'
@@ -117,7 +130,7 @@ jobs:
         working-directory: dev-autographs
         run: npm run tauri:build
 
-      - name: Find installer artifact and hash it
+      - name: Find installer artifact, hash it, stage CLI for web desk setups
         id: artifact
         working-directory: dev-autographs
         shell: pwsh
@@ -129,6 +142,11 @@ jobs:
           "name=$($exe.Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "sha256=$hash" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "$hash  $($exe.Name)" | Out-File -FilePath "$($exe.FullName).sha256" -Encoding ascii
+          $ver = "${{ github.event.inputs.version }}".TrimStart("v")
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE/cli-out" | Out-Null
+          Copy-Item "packages/cli/bin/cli.cjs" "$env:GITHUB_WORKSPACE/cli-out/cli.cjs" -Force
+          Copy-Item "packages/cli/bin/paw-prints.cjs" "$env:GITHUB_WORKSPACE/cli-out/paw-prints.cjs" -Force
+          Set-Content -Path "$env:GITHUB_WORKSPACE/cli-out/VERSION" -Value $ver -NoNewline
 
       - name: Release body from CHANGELOG
         id: notes
@@ -139,6 +157,7 @@ jobs:
           $m = [regex]::Match($md, "(?s)## \[$([regex]::Escape($tag.TrimStart('v')))\][^\n]*\n(.*?)(?=\n## \[|\z)")
           $body = if ($m.Success) { $m.Groups[1].Value.Trim() } else { "See CHANGELOG.md" }
           $body += "`n`n**SHA-256** `${{ steps.artifact.outputs.sha256 }}`  `n_Built $(Get-Date -Format 'yyyy-MM-dd') UTC by GitHub Actions._"
+          $body += "`n`nWeb desk setup (.ps1 / .sh) installs **cli.cjs** from this release (same build)."
           Set-Content -Path release-body.md -Value $body
 
       - name: Publish to Dev-Autographs-Installer Releases
@@ -151,6 +170,9 @@ jobs:
           files: |
             ${{ steps.artifact.outputs.path }}
             ${{ steps.artifact.outputs.path }}.sha256
+            cli-out/cli.cjs
+            cli-out/paw-prints.cjs
+            cli-out/VERSION
           token: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
