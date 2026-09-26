@@ -3,6 +3,16 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.5] - 2026-09-26
+
+Installer posted: **2026-09-26**. Tag `v0.2.5` on Dev-Autographs and Dev-Autographs-Installer.
+
+### Signature transfer
+- Changing a locked code mark **moves all credit** (seals + history under every key on the account) onto the new wording and **frees the old name** so someone else can claim it.
+- Desk and web desk confirm before Save; the rename is logged under Signature changes / mark history.
+- Honorary overlay groups by the current signature — retired names (e.g. `CR` after `Creal589`) no longer show as a second live person.
+- Opening the desk once consolidates leftover credit still sitting on retired wording; seal publish also stamps the locked mark.
+
 ## [0.2.4] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.4` on Dev-Autographs and Dev-Autographs-Installer.
