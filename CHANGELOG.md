@@ -3,6 +3,21 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.1] - 2026-09-26
+
+Installer posted: **2026-09-26**. Tag `v0.2.1` on Dev-Autographs and Dev-Autographs-Installer.
+File: `releases/v0.2.1/Dev-Autographs_0.2.1_x64-setup.exe` (5.3 MB), SHA-256 `F9A92CC517A50C81B3FD95D58B540DB9EF1C63176C52F69F4E2FCD3ECF0257CD`.
+
+### Desk stability
+- No more Windows console flashes: Node/git child processes use `CREATE_NO_WINDOW`. Ledger refresh uses in-process HTTPS instead of spawning `curl.exe`.
+- Stopped re-running install-hooks on every settings/focus tick (that was the freeze + terminal pop-up loop).
+- Ledger numbers come from the registry when reachable. A wiped registry no longer leaves the desk showing stale local seals as if they were live.
+- After Ink, locked autograph words already on this PC are pushed back to the registry so they do not fall back to defaults.
+- CLI inside the installer is minified (no source maps / comments).
+
+### Required ops note
+The hosted registry must have `DATABASE_URL` (Railway Postgres) or every redeploy resets accounts, marks and seals. Confirm `/v1/public-config` shows `"durableStore": true`.
+
 ## [0.2.0] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.0` on Dev-Autographs and Dev-Autographs-Installer.

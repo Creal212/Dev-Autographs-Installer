@@ -2,9 +2,9 @@
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
-**Latest installer posted: 2026-09-26 (v0.2.0).** See [CHANGELOG.md](CHANGELOG.md) for what changed.
+**Latest installer posted: 2026-09-26 (v0.2.1).** See [CHANGELOG.md](CHANGELOG.md) for what changed.
 
-- Download v0.2.0 (4.8 MB): [releases/v0.2.0/](releases/v0.2.0/) in this repo. SHA-256 `E9C725EB9AF22D0649F4316B112C03DB24D5486D90894BA618A4C99115409175`.
+- Download v0.2.1 (5.3 MB): [releases/v0.2.1/](releases/v0.2.1/) in this repo. SHA-256 `F9A92CC517A50C81B3FD95D58B540DB9EF1C63176C52F69F4E2FCD3ECF0257CD`.
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
 - Website and web desk: https://github.com/Creal212/Dev-Autographs-Website (`/desk.html`)
 - App, CLI and registry source: https://github.com/Creal212/Dev-Autographs
