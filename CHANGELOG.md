@@ -13,6 +13,13 @@ Installer posted: **2026-09-26**. Tag `v0.2.5` on Dev-Autographs and Dev-Autogra
 - Honorary overlay groups by the current signature — retired names (e.g. `CR` after `Creal589`) no longer show as a second live person.
 - Opening the desk once consolidates leftover credit still sitting on retired wording; seal publish also stamps the locked mark.
 
+### Agent 589 prefs
+- Stamp Room: show / mute tips / small size for the pixel guide. Preferences stay on this PC.
+
+### Setup clarity & support
+- After install → Ink GitHub → lock signatures, sit back and work as usual — hooks attach your mark on commit and push.
+- Bug reports and help: [589 ManCave on Discord](https://discord.gg/WZCxhjPwE).
+
 ## [0.2.4] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.4` on Dev-Autographs and Dev-Autographs-Installer.

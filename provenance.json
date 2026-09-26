@@ -2,30 +2,20 @@
   "version": "pawprints-attestation-v1",
   "app": "Creal212/Dev-Autographs-Installer",
   "versionLabel": "2026-09-26",
-  "buildHash": "7fceaa239564752a94f7ef26e86371bfb3a519f4dbef12da1d281597a5f2242d",
-  "createdAt": "2026-09-26T22:55:46.385Z",
+  "buildHash": "35f08db5f20d8e48bc2c9ecfad0689e236c211d20cba8d58648997d6cf6d7aa7",
+  "createdAt": "2026-09-26T23:59:22.734Z",
   "contributors": [
     {
       "signerId": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0",
       "displayMark": "Creal589",
       "trustLevel": "L2",
-      "weight": 0.5,
+      "weight": 1,
       "roles": [
         "author"
       ],
-      "sealedFiles": 2
-    },
-    {
-      "signerId": "MCowBQYDK2VwAyEAQrPeRC-Z7vTfDPfhAGq99yitajp2fZpUmo7jk_5Ld20",
-      "displayMark": "Creal589",
-      "trustLevel": "L2",
-      "weight": 0.5,
-      "roles": [
-        "author"
-      ],
-      "sealedFiles": 2
+      "sealedFiles": 4
     }
   ],
   "issuer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0",
-  "signature": "5mj3OZTj3A-8LFs66PnlQn6XpC6kmPf3h1jyceGAtoLL0ToOritLTWpeaSn4kE55fySmLplk2p5A3Kilbq9iBw"
+  "signature": "u6xKW4gL9uQw3T4ohVmclgwEzITS96vROWQ-qG1G-MVYVVgG7YhdR3hHKUWQxPSqisgpUKgyj0C72dmNaUhWAg"
 }

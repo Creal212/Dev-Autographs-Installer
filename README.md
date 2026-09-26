@@ -2,18 +2,25 @@
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
-**Latest installer posted: 2026-09-26 (v0.2.4).** See [CHANGELOG.md](CHANGELOG.md). Works on any install drive; starter marks only for new unlocked accounts.
+**Latest installer posted: 2026-09-26 (v0.2.5).** See [CHANGELOG.md](CHANGELOG.md).
 
-- Download v0.2.4 (5.3 MB): [releases/v0.2.4/](releases/v0.2.4/) in this repo. SHA-256 `E5686D0FAA7AE5AA5D9EC50FD4C843B9BCC46D1C692F68CFF8B2569D4E96E085`.
+- Download v0.2.5: [releases/v0.2.5/](releases/v0.2.5/) in this repo (hash filled when the build is posted).
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
-- Website and web desk: https://www.devautographs.com ? [web desk](https://www.devautographs.com/desk.html)
+- Website and web desk: https://www.devautographs.com · [web desk](https://www.devautographs.com/desk.html)
 - App, CLI and registry source: https://github.com/Creal212/Dev-Autographs
+- **Bugs & help (Discord):** https://discord.gg/WZCxhjPwE ? [589 ManCave](https://discord.gg/WZCxhjPwE)
 
 This repo does not contain the app source. It holds release tags, `.exe` downloads, `cli/` for the web desk setup script, and release notes.
+
+## Report a bug
+
+Join **[589 ManCave on Discord](https://discord.gg/WZCxhjPwE)** for bug reports, questions, and setup help. That is the fastest place to reach the maintainer.
 
 ## What Dev Autographs is
 
 Developers sign the code they ship. Once linked to a GitHub account, every commit seals the staged source files with an Ed25519 signature and every push publishes the file fingerprints (hashes, never source) to a shared registry. Sites built from that code carry a small report; anyone presses **Shift + D** and sees who made it, ranked out of 100.
+
+**After install ? Ink GitHub ? lock your signatures, sit back and work as usual.** Global hooks attach your mark automatically on commit and push.
 
 Three pieces:
 
@@ -27,7 +34,7 @@ Three pieces:
 
 - **One GitHub account, any device. Last Ink wins.** Inking on a new device makes it the signer. The previous device is told the next time it opens or commits ("Someone inked @you on another device...") and stops sealing. If that was not you, secure your GitHub account and Ink again.
 - **Ledger follows the account.** Seals made with any key your GitHub ever held still count for you. Nothing is lost when you switch or lose a machine.
-- **Autograph words are locked and unique.** Your code mark and repo mark are yours across the whole registry, in either slot. Changing them asks for confirmation. They survive re-ink, unlink, and new devices.
+- **Autograph words are locked and unique.** Your code mark and repo mark are yours across the whole registry, in either slot. Changing them asks for confirmation and transfers credit to the new wording. They survive re-ink, unlink, and new devices.
 - **Unlink** releases your key on the registry and shreds the local copy. Your history stays.
 
 ### What the installer does
@@ -100,4 +107,5 @@ The installer lands in `apps/desktop/src-tauri/target/release/bundle/nsis/`.
 | [www.devautographs.com](https://www.devautographs.com) | Marketing site + web desk (source: Dev-Autographs-Website) |
 | [Dev-Autographs-Installer](https://github.com/Creal212/Dev-Autographs-Installer) | This repo: releases, CLI bundle, changelog |
 
-Meet the dev: https://www.creal589.dev/
+Meet the dev: https://www.creal589.dev/  
+Bugs & help: https://discord.gg/WZCxhjPwE
