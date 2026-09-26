@@ -6,7 +6,7 @@ Windows installer releases, the single-file CLI, and the changelog for **Dev Aut
 
 - Download v0.2.1 (5.3 MB): [releases/v0.2.1/](releases/v0.2.1/) in this repo. SHA-256 `F9A92CC517A50C81B3FD95D58B540DB9EF1C63176C52F69F4E2FCD3ECF0257CD`.
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
-- Website and web desk: https://github.com/Creal212/Dev-Autographs-Website (`/desk.html`)
+- Website and web desk: https://www.devautographs.com · [web desk](https://www.devautographs.com/desk.html)
 - App, CLI and registry source: https://github.com/Creal212/Dev-Autographs
 
 This repo does not contain the app source. It holds release tags, `.exe` downloads, `cli/` for the web desk setup script, and release notes.
@@ -85,7 +85,7 @@ The installer lands in `apps/desktop/src-tauri/target/release/bundle/nsis/`.
 | Repo | Role |
 |---|---|
 | [Dev-Autographs](https://github.com/Creal212/Dev-Autographs) | Desk, CLI, registry, extension (monorepo) |
-| [Dev-Autographs-Website](https://github.com/Creal212/Dev-Autographs-Website) | Marketing site, web desk, lookup, verify |
+| [www.devautographs.com](https://www.devautographs.com) | Marketing site + web desk (source: Dev-Autographs-Website) |
 | [Dev-Autographs-Installer](https://github.com/Creal212/Dev-Autographs-Installer) | This repo: releases, CLI bundle, changelog |
 
 Meet the dev: https://www.creal589.dev/
