@@ -1,7 +1,7 @@
 {
   "version": "dev-autographs-report-v1",
   "repoFullName": "Creal212/Dev-Autographs-Installer",
-  "updatedAt": "2026-09-26T21:27:20.393Z",
+  "updatedAt": "2026-09-26T21:31:21.052Z",
   "ledgerApi": "https://dev-autographs-registry-production.up.railway.app",
   "codeMark": {
     "displayMark": "CR",
@@ -28,6 +28,13 @@
       "contentSha256": "a1a60effdf059bce09a1b3eb51be93716b21a810d90fe320a8b918417f431413",
       "displayMark": "CR",
       "createdAt": "2026-09-26T21:27:20.293Z",
+      "signer": "MCowBQYDK2VwAyEAVhSKbebOtNJ35dS2pCscMt3d1pIMjyyvrFz2feO3rQ8"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "contentSha256": "34d66ffdd40d93b25250faa9ff8553d6be656ef2994ee6252cd5e4d448ddb551",
+      "displayMark": "CR",
+      "createdAt": "2026-09-26T21:31:20.981Z",
       "signer": "MCowBQYDK2VwAyEAVhSKbebOtNJ35dS2pCscMt3d1pIMjyyvrFz2feO3rQ8"
     },
     {
@@ -90,7 +97,7 @@
       "path": "README.md",
       "contentSha256": "22bc3ff27130640b9b228b17c41116da43c6ca9996e1b561e83948fb51fedefa",
       "displayMark": "CR",
-      "createdAt": "2026-09-26T21:27:20.322Z",
+      "createdAt": "2026-09-26T21:27:21.551Z",
       "signer": "MCowBQYDK2VwAyEAVhSKbebOtNJ35dS2pCscMt3d1pIMjyyvrFz2feO3rQ8"
     }
   ],
@@ -127,5 +134,5 @@
       }
     ]
   },
-  "buildHash": "61525683aa87cef94a674f75203204d20500ee0a76f104e1619353087478fcbb"
+  "buildHash": "1b4ba8b5791f5b55785214ddfe96fc953ff03fd07bd88e35fab9f4e17f230f7d"
 }
