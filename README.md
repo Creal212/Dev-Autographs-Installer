@@ -52,6 +52,8 @@ The optional manual GitHub build requires an unused version tag already pushed t
 
 Synthetic Windows tests verify real DPAPI encryption/decryption, signing, CLI/native process interoperability, migration, concurrent-write rejection, and preservation after failed revocation. Those checks do not establish a completed interactive installer lifecycle. A clean install, update and uninstall in an isolated Windows Sandbox/VM, and decryption attempted as a second Windows user, have **not been run** for this release preparation. No provisioned Sandbox/VM was available on the build machine. The installer remains unsigned; hash checks and archive inspection do not replace publisher signing or those runtime acceptance checks.
 
+The new manual [Windows installer acceptance workflow](.github/workflows/windows-acceptance.yml) runs the released v0.2.8 → v0.2.9 upgrade, fresh installation, foreign-hook preservation, real uninstall and second-account DPAPI denial on disposable GitHub Windows VMs. Its first hosted run is pending. [Test scope, guards and remaining boundaries](docs/WINDOWS-ACCEPTANCE.md) explain the distinction between local harness checks and passing installer runtime evidence.
+
 ## Support and source
 
 [Website and web desk](https://www.devautographs.com/) · [Source](https://github.com/Creal212/Dev-Autographs) · [589 ManCave support](https://discord.gg/WZCxhjPwE)

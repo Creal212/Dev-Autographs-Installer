@@ -1,0 +1,45 @@
+name: Windows installer acceptance
+
+# Manual only: creates a synthetic Windows account and runs the real installers.
+# Never use a self-hosted runner for this workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-installer-acceptance-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  released-installer-lifecycle:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: Checkout the exact acceptance revision
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Use Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Verify release tooling and acceptance safety guards
+        run: node --test scripts/release.test.mjs scripts/publish-release.test.mjs scripts/windows-acceptance.test.mjs
+      - name: Install, upgrade, deny foreign-account decryption, and uninstall released versions
+        shell: pwsh
+        run: ./scripts/windows-acceptance.ps1
+      - name: Retain sanitized acceptance results only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: windows-acceptance-${{ matrix.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: acceptance-results/*.json
+          if-no-files-found: error
+          retention-days: 30
+          # Never upload runner profiles, fixture directories, private keys, or raw child output.
