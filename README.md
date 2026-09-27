@@ -1,4 +1,4 @@
-﻿# Dev Autographs Installer
+# Dev Autographs Installer
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
@@ -20,7 +20,7 @@ Join **[589 ManCave on Discord](https://discord.gg/WZCxhjPwE)** for bug reports,
 
 Developers sign the code they ship. Once linked to a GitHub account, every commit seals the staged source files with an Ed25519 signature and every push publishes the file fingerprints (hashes, never source) to a shared registry. Sites built from that code carry a small report; anyone presses **Shift + D** and sees who made it, ranked out of 100.
 
-**After install ? Ink GitHub ? lock your signatures, sit back and work as usual.** Global hooks attach your mark automatically on commit and push.
+**After install → Ink GitHub → lock your signatures, sit back and work as usual.** Global hooks attach your mark automatically on commit and push.
 
 Three pieces:
 
