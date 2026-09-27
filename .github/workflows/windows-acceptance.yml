@@ -4,6 +4,12 @@ name: Windows installer acceptance
 # Never use a self-hosted runner for this workflow.
 on:
   workflow_dispatch:
+    inputs:
+      target_version:
+        description: 'Target release version (blank uses committed cli/VERSION; baseline is 0.2.8)'
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -33,6 +39,8 @@ jobs:
         run: node --test scripts/release.test.mjs scripts/publish-release.test.mjs scripts/windows-acceptance.test.mjs
       - name: Install, upgrade, deny foreign-account decryption, and uninstall released versions
         shell: pwsh
+        env:
+          ACCEPTANCE_TARGET_VERSION: ${{ inputs.target_version }}
         run: ./scripts/windows-acceptance.ps1
       - name: Retain sanitized acceptance results only
         if: always()

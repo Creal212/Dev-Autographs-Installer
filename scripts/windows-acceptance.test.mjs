@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {assertHostedRunner, assertInside} from './windows-acceptance-fixture.mjs';
+import {assertHostedRunner, assertInside, nodePreloadOption, targetVersion} from './windows-acceptance-fixture.mjs';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const valid = {GITHUB_ACTIONS: 'true', RUNNER_ENVIRONMENT: 'github-hosted', RUNNER_OS: 'Windows', GITHUB_REPOSITORY: 'Creal212/Dev-Autographs-Installer', GITHUB_EVENT_NAME: 'workflow_dispatch', GITHUB_RUN_ID: '123', RUNNER_TEMP: '/runner/temp', GITHUB_WORKSPACE: '/runner/workspace', USERPROFILE: '/runner/home'};
@@ -32,6 +32,22 @@ test('fixture cleanup scope rejects parent, sibling-prefix and traversal targets
   assert.throws(() => assertInside(parent, `${parent}-other`));
   assert.throws(() => assertInside(parent, path.join(parent, '..', 'elsewhere')));
   assert.doesNotThrow(() => assertInside(parent, path.join(parent, 'owned fixture')));
+});
+test('target version accepts DPAPI releases and refuses unsupported or injected paths', () => {
+  for (const value of ['0.2.9', '0.2.10', '1.0.0']) assert.equal(targetVersion(value), value);
+  for (const value of ['', '0.2.8', '0.1.90', '../0.2.9', '0.2.9; exit 0', 'v0.2.9', '0.2.9\n--flag']) assert.throws(() => targetVersion(value));
+});
+test('network guard preload survives actual Node option parsing with spaces and Windows separators', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'da preload path '));
+  try {
+    const preload = path.join(root, 'deny-network.cjs');
+    fs.writeFileSync(preload, 'globalThis.fetch = () => { throw new Error("fixture-network-denied"); };');
+    const result = spawnSync(process.execPath, ['-e', 'try { fetch("https://example.invalid"); process.exit(2); } catch(e) { process.stdout.write(e.message); }'], {encoding: 'utf8', windowsHide: true, env: {...process.env, NODE_OPTIONS: nodePreloadOption(preload)}});
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout, 'fixture-network-denied');
+    assert.equal(nodePreloadOption('C:\\Windows path\\guard.cjs'), '--require "C:/Windows path/guard.cjs"');
+    assert.throws(() => nodePreloadOption('bad" --eval evil'));
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });
 test('fixture executable refuses an unguarded process without creating a profile', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'da-acceptance-refusal-'));

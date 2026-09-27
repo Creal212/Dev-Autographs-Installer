@@ -1,11 +1,15 @@
 # Released Windows installer acceptance
 
 The **Windows installer acceptance** workflow runs the actual, checksum-verified
-v0.2.8 and v0.2.9 installers on disposable GitHub-hosted Windows Server 2022 and
+v0.2.8 and the chosen target installers on disposable GitHub-hosted Windows Server 2022 and
 2025 VMs. It is manual (`workflow_dispatch`), uses a read-only repository token,
 and does not require a signing key, OAuth credential, registry token, or real user
-identity. The first hosted run is pending; adding the harness is not a passing
-runtime result.
+identity. The target defaults to committed `cli/VERSION`, or can be a specific
+`target_version` such as `0.2.9` or `0.2.10`. It must be 0.2.9 or newer, with a
+complete verified release directory in the checked-out revision. The first
+hosted run installed v0.2.8 on both VMs, then exposed a harness Node preload path
+error; that run is not a passing lifecycle result. The path handling now has an
+actual child-Node regression test. A complete passing hosted run is still pending.
 
 Run the workflow from the reviewed default branch in GitHub Actions. Do not run
 `windows-acceptance.ps1` on a developer computer, set fake runner variables to get
@@ -22,7 +26,7 @@ is disabled, so synthetic signing keys cannot be registered with the service.
 2. The packaged v0.2.8 CLI creates a synthetic plaintext key, custom public style,
    settings, a matching legacy backup, and global/local hook chains that preserve
    existing foreign controls.
-3. The real v0.2.9 `/S /UPDATE` installer replaces program files while leaving
+3. The real target `/S /UPDATE` installer replaces program files while leaving
    identity, settings, hooks and Git configuration unchanged. First identity
    access migrates the same key to DPAPI and removes the matching plaintext
    backup. Current-user decryption and Ed25519 signing work; source tampering fails
@@ -39,7 +43,7 @@ is disabled, so synthetic signing keys cannot be registered with the service.
    uninstall entry, retains the encrypted identity/settings, and restores the
    previous global/local controls and template. Actual Git commits then execute
    those foreign hooks.
-7. A separate clean v0.2.9 installation creates no identity automatically. The
+7. A separate clean target installation creates no identity automatically. The
    packaged CLI creates a new DPAPI key directly. Repeated empty hook cleanup and
    real uninstall succeed while retaining that encrypted identity.
 

@@ -23,6 +23,21 @@ export function assertInside(parent, child) {
   assert.ok(relative && relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative), 'Fixture path escaped its parent');
 }
 
+export function targetVersion(value) {
+  const version = String(value ?? '').trim();
+  assert.match(version, /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/, 'A plain release version is required');
+  const [major, minor, patch] = version.split('.').map(Number);
+  assert.ok([major, minor, patch].every(Number.isSafeInteger), 'Invalid version number');
+  assert.ok(major > 0 || minor > 2 || (minor === 2 && patch >= 9), 'Target must support Windows DPAPI (0.2.9 or newer)');
+  return version;
+}
+
+export function nodePreloadOption(file) {
+  assert.ok(typeof file === 'string' && file && !/["\r\n\0]/.test(file), 'Invalid preload path');
+  // NODE_OPTIONS has its own quote/escape parser: unescaped Windows backslashes disappear.
+  return `--require "${file.replaceAll('\\', '/')}"`;
+}
+
 const digest = value => createHash('sha256').update(value).digest('hex');
 const hash = file => digest(fs.readFileSync(file));
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
@@ -102,9 +117,9 @@ function seed(root, install) {
   passed('0.2.8 installed global and inventoried local hooks over foreign controls');
 }
 
-function upgraded(root, install) {
+function upgraded(root, install, version) {
   const state = read(stateFile(root));
-  installedBytes(install, '0.2.9');
+  installedBytes(install, version);
   assert.equal(hash(identity), state.identityHash);
   assert.equal(hash(path.join(home, 'settings.json')), state.settingsHash);
   filesEqual(state.installedHooks);
@@ -124,7 +139,7 @@ function upgraded(root, install) {
   const pub = createPublicKey({key: Buffer.from(keys.publicKey, 'base64url'), type: 'spki', format: 'der'});
   const message = Buffer.from('Synthetic installed CLI DPAPI acceptance');
   assert.ok(verify(null, message, pub, sign(null, message, key)));
-  passed('Installed 0.2.9 migrated the same key to DPAPI, retired plaintext backup, and preserved public fields');
+  passed(`Installed ${version} migrated the same key to DPAPI, retired plaintext backup, and preserved public fields`);
   passed('Current Windows user decrypted the migrated key and produced a valid Ed25519 signature');
   const sample = path.join(state.repo, 'synthetic-source.txt');
   fs.writeFileSync(sample, 'Synthetic source, no production project.\n');
@@ -156,14 +171,14 @@ function uninstalled(root) {
   fs.renameSync(home, path.join(root, 'retained-upgrade-profile'));
 }
 
-function fresh(root, install) {
-  installedBytes(install, '0.2.9');
-  assert.equal(fs.existsSync(home), false, 'Fresh 0.2.9 installation must not create an identity');
+function fresh(root, install, version) {
+  installedBytes(install, version);
+  assert.equal(fs.existsSync(home), false, 'Fresh installation must not create an identity');
   cli(install, ['keygen', '--mark', 'Synthetic fresh install'], root);
   owner(root);
   assertEnvelope(read(identity));
   write(path.join(root, 'fresh-public-state.json'), {identityHash: hash(identity)});
-  passed('Fresh 0.2.9 installs without an identity, then creates DPAPI storage directly');
+  passed(`Fresh ${version} installs without an identity, then creates DPAPI storage directly`);
   cli(install, ['remove-hooks', '--global'], root);
   cli(install, ['remove-hooks', '--global'], root);
   passed('Hook cleanup succeeds repeatedly with no owned hooks');
@@ -178,8 +193,10 @@ function freshRemoved(root) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     assertHostedRunner();
-    const [operation, root, install] = process.argv.slice(2);
+    const [operation, root, install, version] = process.argv.slice(2);
     if (operation === 'preflight') console.log(JSON.stringify(preflight()));
+    else if (operation === 'target-version') console.log(targetVersion(root));
+    else if (operation === 'node-options') console.log(nodePreloadOption(root));
     else {
       assertInside(process.env.RUNNER_TEMP, root);
       assert.match(path.basename(root), /^dev-autographs-acceptance-/);
@@ -187,7 +204,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       assert.equal(path.resolve(process.env.GIT_CONFIG_GLOBAL), path.join(root, 'global.gitconfig'));
       const operations = {seed, upgraded, uninstalled, fresh, 'fresh-removed': freshRemoved};
       assert.ok(Object.hasOwn(operations, operation), 'Unknown acceptance operation');
-      operations[operation](root, install);
+      operations[operation](root, install, targetVersion(version));
       console.log(JSON.stringify({checks}));
     }
   } catch (error) {

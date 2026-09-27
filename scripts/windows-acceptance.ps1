@@ -1,6 +1,6 @@
 # Real installer lifecycle tests. This script intentionally refuses local/self-hosted execution.
 # Never set fake runner variables to execute it on a developer machine.
-param([switch]$CheckOnly)
+param([switch]$CheckOnly, [string]$TargetVersion = $env:ACCEPTANCE_TARGET_VERSION)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
@@ -27,7 +27,10 @@ if (Get-Process -Name 'dev-autographs-desktop' -ErrorAction SilentlyContinue) { 
 if ($CheckOnly) { Write-Output 'Hosted Windows/profile guards passed; no mutations performed.'; exit 0 }
 
 $repository = Split-Path -Parent $PSScriptRoot
-foreach ($tag in @('v0.2.8', 'v0.2.9')) {
+if ([string]::IsNullOrWhiteSpace($TargetVersion)) { $TargetVersion = [IO.File]::ReadAllText((Join-Path $repository 'cli\VERSION')).Trim() }
+$TargetVersion = & node $fixtureHelper target-version $TargetVersion
+if ($LASTEXITCODE -ne 0) { throw 'Invalid target release; nothing was installed.' }
+foreach ($tag in @('v0.2.8', "v$TargetVersion")) {
   & node (Join-Path $PSScriptRoot 'verify-release.mjs') $tag
   if ($LASTEXITCODE -ne 0) { throw 'Released bytes failed validation; nothing was installed.' }
 }
@@ -39,6 +42,7 @@ $reportDirectory = Join-Path $env:GITHUB_WORKSPACE 'acceptance-results'
 $reportFile = Join-Path $reportDirectory ('windows-' + $env:ImageOS + '.json')
 $report = [ordered]@{
   schema = 'dev-autographs-windows-acceptance-v1'; passed = $false
+  baselineVersion = '0.2.8'; targetVersion = $TargetVersion
   runId = $env:GITHUB_RUN_ID; runAttempt = $env:GITHUB_RUN_ATTEMPT; commit = $env:GITHUB_SHA
   image = $env:ImageOS; imageVersion = $env:ImageVersion; osVersion = [Environment]::OSVersion.VersionString
   startedAt = (Get-Date).ToUniversalTime().ToString('o'); checks = [Collections.Generic.List[object]]::new()
@@ -83,7 +87,7 @@ function Invoke-Installer([string]$Executable, [string]$Arguments, [bool]$Requir
   return $code
 }
 function Invoke-Fixture([string]$Operation) {
-  $output = & node $fixtureHelper $Operation $root $install
+  $output = & node $fixtureHelper $Operation $root $install $TargetVersion
   if ($LASTEXITCODE -ne 0) { throw "Synthetic fixture step failed: $Operation (private output suppressed)." }
   $result = $output | ConvertFrom-Json
   foreach ($check in $result.checks) { Assert-True $check.passed $check.name; Add-Passed $check.name }
@@ -131,10 +135,12 @@ globalThis.fetch = fail;
 for (const name of ['http', 'https']) { const api = require(name); api.request = fail; api.get = fail; }
 const net = require('net'); net.connect = fail; net.createConnection = fail;
 '@ | Set-Content -LiteralPath $denyNetwork -Encoding utf8NoBOM
-  $env:NODE_OPTIONS = '--require "' + $denyNetwork + '"'
+  $preloadOption = & node $fixtureHelper node-options $denyNetwork
+  if ($LASTEXITCODE -ne 0) { throw 'Could not configure isolated Node network guard.' }
+  $env:NODE_OPTIONS = $preloadOption
   $oldInstaller = Join-Path $repository 'releases\v0.2.8\Dev-Autographs_0.2.8_x64-setup.exe'
-  $newInstaller = Join-Path $repository 'releases\v0.2.9\Dev-Autographs_0.2.9_x64-setup.exe'
-  $report.releaseInputs = @('v0.2.8', 'v0.2.9') | ForEach-Object {
+  $newInstaller = Join-Path $repository "releases\v$TargetVersion\Dev-Autographs_${TargetVersion}_x64-setup.exe"
+  $report.releaseInputs = @('v0.2.8', "v$TargetVersion") | ForEach-Object {
     $manifest = Get-Content -LiteralPath (Join-Path $repository "releases\$_\release.json") -Raw | ConvertFrom-Json
     $exe = Join-Path $repository "releases\$_\Dev-Autographs_$($manifest.version)_x64-setup.exe"
     [ordered]@{version = $manifest.version; sourceCommit = $manifest.sourceCommit; installerSha256 = (Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash.ToLowerInvariant(); authenticode = (Get-AuthenticodeSignature -LiteralPath $exe).Status.ToString()}
@@ -143,9 +149,9 @@ const net = require('net'); net.connect = fail; net.createConnection = fail;
   $null = Invoke-Installer $oldInstaller "/S /D=$install"
   Assert-Installed '0.2.8'
   Invoke-Fixture seed
-  $activeStep = 'real 0.2.8 to 0.2.9 update'
+  $activeStep = "real 0.2.8 to $TargetVersion update"
   $null = Invoke-Installer $newInstaller "/S /UPDATE /D=$install"
-  Assert-Installed '0.2.9'
+  Assert-Installed $TargetVersion
   Invoke-Fixture upgraded
 
   $activeStep = 'cross-user DPAPI denial'
@@ -204,9 +210,9 @@ const net = require('net'); net.connect = fail; net.createConnection = fail;
   $null = Invoke-Uninstall
   Assert-Uninstalled
   Invoke-Fixture uninstalled
-  $activeStep = 'clean install and uninstall 0.2.9 without previous identity/hooks'
+  $activeStep = "clean install and uninstall $TargetVersion without previous identity/hooks"
   $null = Invoke-Installer $newInstaller "/S /D=$install"
-  Assert-Installed '0.2.9'
+  Assert-Installed $TargetVersion
   Invoke-Fixture fresh
   $null = Invoke-Uninstall
   Assert-Uninstalled
