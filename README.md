@@ -50,9 +50,11 @@ The optional manual GitHub build requires an unused version tag already pushed t
 
 ## Acceptance limits
 
-Synthetic Windows tests verify real DPAPI encryption/decryption, signing, CLI/native process interoperability, migration, concurrent-write rejection, and preservation after failed revocation. Those checks do not establish a completed interactive installer lifecycle. A clean install, update and uninstall in an isolated Windows Sandbox/VM, and decryption attempted as a second Windows user, have **not been run** for this release preparation. No provisioned Sandbox/VM was available on the build machine. The installer remains unsigned; hash checks do not replace publisher signing or interactive Windows 10/11 acceptance.
+The v0.2.10 installer passed real silent clean install, v0.2.8 upgrade, ambiguous-hook uninstall refusal, successful uninstall, and independent-account DPAPI/CLI denial on disposable **Windows Server 2022 and 2025** VMs. Identity, settings and foreign controls were preserved as required. [Verified run 36334025464](https://github.com/Creal212/Dev-Autographs-Installer/actions/runs/36334025464) tested the exact committed release assets from `a25848973dafc4ace9455483376056517e6d402c`.
 
-The manual [Windows installer acceptance workflow](.github/workflows/windows-acceptance.yml) tests an upgrade from v0.2.8 to the committed `cli/VERSION` (or an explicit target version), fresh installation, foreign-hook preservation, real uninstall and second-account DPAPI denial on disposable GitHub Windows VMs. A complete passing hosted run is pending. [Test scope, guards and remaining boundaries](docs/WINDOWS-ACCEPTANCE.md) explain the distinction between local harness checks and passing installer runtime evidence.
+The manual [Windows installer acceptance workflow](.github/workflows/windows-acceptance.yml) defaults to committed `cli/VERSION`, or an explicit target version. [Scope, safety guards and evidence](docs/WINDOWS-ACCEPTANCE.md) describe its assertions. Local release/harness tests pass 38/38.
+
+The installer remains unsigned. Interactive Windows 10/11, SmartScreen/UAC, a missing-WebView2 bootstrap, native login dialogs and live GitHub OAuth remain unverified. Hosted silent lifecycle evidence and hashes do not replace publisher signing or those interactive checks. DPAPI does not protect against code already running as the owning Windows user.
 
 ## Support and source
 

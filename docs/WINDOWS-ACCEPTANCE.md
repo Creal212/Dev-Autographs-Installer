@@ -6,10 +6,15 @@ v0.2.8 and the chosen target installers on disposable GitHub-hosted Windows Serv
 and does not require a signing key, OAuth credential, registry token, or real user
 identity. The target defaults to committed `cli/VERSION`, or can be a specific
 `target_version` such as `0.2.9` or `0.2.10`. It must be 0.2.9 or newer, with a
-complete verified release directory in the checked-out revision. The first
-hosted run installed v0.2.8 on both VMs, then exposed a harness Node preload path
-error; that run is not a passing lifecycle result. The path handling now has an
-actual child-Node regression test. A complete passing hosted run is still pending.
+complete verified release directory in the checked-out revision.
+
+**Verified 2026-09-27:** target v0.2.10 passed on both Windows Server 2022 and 2025
+in [run36334025464](https://github.com/Creal212/Dev-Autographs-Installer/actions/runs/36334025464),
+commit `a25848973dafc4ace9455483376056517e6d402c`. The target installer SHA-256 is
+`bd039e5642a396dec191d11c7992ede3996f1239855b2c40d023809b004cce6e`, from canonical
+source `a0e88b0486081b8e515b5aee4f46b6e76fa146ec`. Earlier runs exposed only harness
+quoting/cross-volume bugs, now covered by local regressions; those partial runs
+are not counted as completed acceptance.
 
 Run the workflow from the reviewed default branch in GitHub Actions. Do not run
 `windows-acceptance.ps1` on a developer computer, set fake runner variables to get

@@ -12,7 +12,7 @@ Browser session integrity, automatic Marketplace reconciliation and local fonts.
 - Add automatic Marketplace reconciliation with committed leases, bounded batches, failure backoff, fail-closed freshness and backlog diagnostics. Stale worker/admin/webhook snapshots cannot cancel a newer purchase. Marketplace remains disabled pending live provider and policy acceptance.
 - Bundle the desktop's existing font families and serve website fonts locally with original licenses and SHA-256 provenance. Remove Google font/style permissions from their CSPs. Generated overlays in other projects retain their own configuration.
 - Backport the exact upstream two-line GLib iterator fix for Linux while retaining the original 0.18.5 version/license. Optimized regressions pass; reverting only the fix reproduces SIGSEGV. This is not full Linux desktop release acceptance or an automatic advisory dismissal.
-- Add guarded real NSIS install/update/uninstall and independent-Windows-account DPAPI acceptance on disposable hosted runners. The release acceptance document records the exact runtime result; interactive Windows 10/11, SmartScreen and live OAuth remain separate gates.
+- Add guarded real NSIS install/update/uninstall and independent-Windows-account DPAPI acceptance on disposable hosted runners. Both Windows Server 2022/2025 jobs passed in run36334025464 against the exact 0.2.10 assets. Interactive Windows 10/11, SmartScreen and live OAuth remain separate gates.
 
 DPAPI, matching CLI storage and safe hook restoration continue from 0.2.9. After protected identity migration, do not downgrade to 0.2.8. This release does not activate a Marketplace listing or promise zero vulnerabilities.
 
