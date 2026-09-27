@@ -1,23 +1,23 @@
 {
   "version": "0.2.12",
-  "sourceCommit": "bfc8682a63e256ec131d7c8ee56b3bb967a83f8a",
+  "sourceCommit": "e81cd86306d2a65856705d94a1bc185b828da5bd",
   "sourceRepository": "https://github.com/Creal212/Dev-Autographs",
   "files": {
     "Dev-Autographs_0.2.12_x64-setup.exe": {
-      "sha256": "b81280e063bed76b1f9a14a5bd2830fbcb800b973fee21d5cc98c2238ab640aa",
-      "size": 6863925
-    },
-    "cli.cjs": {
-      "sha256": "04dc84ec30e0e2d3ce6211233df062ffdc34a34d038f6a64edb39f948ecbc29e",
-      "size": 153654
-    },
-    "paw-prints.cjs": {
-      "sha256": "1d99bf41d741ac6a23f691a7272d1cb4bcc5600f6364f0878e48a50cfe3327de",
-      "size": 43
+      "sha256": "12fc8cada33bae0a8676553c6342924158e713abaae3654c9650ddcc381c2042",
+      "size": 6863468
     },
     "VERSION": {
       "sha256": "b1d246bf58dfe9d621c372fbca4fdda71a56ddd79c641b9e3b7dde08ca4d7512",
       "size": 7
+    },
+    "cli.cjs": {
+      "sha256": "b9326b91d6c2200bdd6be5128a32a121dd1b4fd07ea570c8aa4a9039be5262be",
+      "size": 154329
+    },
+    "paw-prints.cjs": {
+      "sha256": "1d99bf41d741ac6a23f691a7272d1cb4bcc5600f6364f0878e48a50cfe3327de",
+      "size": 43
     }
   }
 }
