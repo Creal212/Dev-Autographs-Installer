@@ -1,7 +1,7 @@
 {
   "version": "dev-autographs-report-v1",
   "repoFullName": "Creal212/Dev-Autographs-Installer",
-  "updatedAt": "2026-09-27T00:18:18.575Z",
+  "updatedAt": "2026-09-27T00:45:19.367Z",
   "ledgerApi": "https://dev-autographs-registry-production.up.railway.app",
   "codeMark": {
     "displayMark": "Creal589",
@@ -9,7 +9,13 @@
     "githubLogin": "Creal212",
     "fingerprint": "3E:2D:75:A8:B9:D0:08:94",
     "signerKeys": [
-      "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0"
+      "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0",
+      "MCowBQYDK2VwAyEATsgut22f0xet4wsZBwAfcfyP8sh5MLq0mqs67WI8dgk",
+      "MCowBQYDK2VwAyEAa0Q-m4oQanm5kGiil0qCNsLTRlyuccM2xqIx-7foKAM",
+      "MCowBQYDK2VwAyEAB-Do5_hrN8cQ-h5u1bJZw8GEzJc_aHHTYsFmgdi0UKg",
+      "MCowBQYDK2VwAyEAyGYG_nipKxLvtgcVw3ObtAqc7uxJzmMzNGWOuLmm7hE",
+      "MCowBQYDK2VwAyEAQrPeRC-Z7vTfDPfhAGq99yitajp2fZpUmo7jk_5Ld20",
+      "MCowBQYDK2VwAyEArb_X9VKouU1z2HjFLT8oB9SLiLsxZUCoGEX7Wrc9gXs"
     ],
     "previousMarks": []
   },
@@ -98,6 +104,13 @@
       "signer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0"
     },
     {
+      "path": "CHANGELOG.md",
+      "contentSha256": "9171c01cc33c4ac8c604300d720164507cbe30a067d8f6ae96075756bd476358",
+      "displayMark": "Creal589",
+      "createdAt": "2026-09-27T00:45:19.243Z",
+      "signer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0"
+    },
+    {
       "path": "cli/cli.cjs",
       "contentSha256": "e8f0677c4293c30a423e65eb2be09d0e85c0507ec1ac1a9fb5cacc6d94eec487",
       "displayMark": "Creal589",
@@ -126,10 +139,17 @@
       "signer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0"
     },
     {
+      "path": "cli/cli.cjs",
+      "contentSha256": "efab872c0e658f822b6ebef92e5624eb2da5d1645304378ea40c67826d9ba108",
+      "displayMark": "Creal589",
+      "createdAt": "2026-09-27T00:45:19.292Z",
+      "signer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0"
+    },
+    {
       "path": "cli/paw-prints.cjs",
       "contentSha256": "1d99bf41d741ac6a23f691a7272d1cb4bcc5600f6364f0878e48a50cfe3327de",
       "displayMark": "Creal589",
-      "createdAt": "2026-09-27T00:01:02.472Z",
+      "createdAt": "2026-09-27T00:18:27.852Z",
       "signer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0"
     },
     {
@@ -229,6 +249,13 @@
       "displayMark": "Creal589",
       "createdAt": "2026-09-27T00:18:18.498Z",
       "signer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0"
+    },
+    {
+      "path": "README.md",
+      "contentSha256": "f43e2a4546ff115f500184ba2cd6a3887dbe8a97c8dc4dbd5b2eae1faa2337c2",
+      "displayMark": "Creal589",
+      "createdAt": "2026-09-27T00:45:19.271Z",
+      "signer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0"
     }
   ],
   "contributors": [
@@ -253,5 +280,5 @@
       }
     ]
   },
-  "buildHash": "26eb2063d2530d8f9195cb4c1432abb0be2edf541a5f91357aa700afc1867c38"
+  "buildHash": "cdd9d5cfa35481c0c8b51a12be369c30a12609e031b60cb3ac5097a56b49182f"
 }

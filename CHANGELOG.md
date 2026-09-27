@@ -3,6 +3,16 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.7] - 2026-09-26
+
+Installer posted: **2026-09-26**. Tag `v0.2.7` on Dev-Autographs and Dev-Autographs-Installer.
+File: `releases/v0.2.7/Dev-Autographs_0.2.7_x64-setup.exe` (5.3 MB), SHA-256 `D918BAC2B55A23D6DEFB6D56079D92BDEA7FE85AF4C0A52796EE9F6B6CA5CB34`.
+
+### Signature transfer UX
+- During a transfer confirm, **Save and lock** is disabled (that button is for first-time signatures). Use the highlighted **Yes, transfer and lock**.
+- Transfer banner is pulsed/highlighted so it is hard to miss.
+- Registry / CLI failures map to plain-language messages. Outdated desk or broken CLI install tells you to update before changing a signature.
+
 ## [0.2.6] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.6` on Dev-Autographs and Dev-Autographs-Installer.
