@@ -1,58 +1,26 @@
-name: Sync CLI to latest release
-
-# Whenever cli/ is updated on main (usually as part of posting a new installer),
-# attach those files to the latest GitHub Release so web desk setup scripts that
-# fetch releases/latest/download/{cli.cjs,paw-prints.cjs,VERSION} stay current
-# even before the next tag is cut.
-
+name: Validate staged release assets
 on:
   push:
     branches: [main]
-    paths:
-      - "cli/**"
-  workflow_dispatch:
-
+    paths: ['cli/**', 'releases/**', 'scripts/**']
+  pull_request:
+    paths: ['cli/**', 'releases/**', 'scripts/**']
 permissions:
-  contents: write
-
+  contents: read
 jobs:
-  sync:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Require CLI bundle
-        shell: bash
-        run: |
-          test -f cli/cli.cjs
-          test -f cli/paw-prints.cjs
-          if [ ! -f cli/VERSION ]; then
-            echo "0.0.0-dev" > cli/VERSION
-          fi
-
-      - name: Resolve latest release tag
-        id: latest
-        shell: bash
-        run: |
-          tag=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
-          if [ -z "$tag" ] || [ "$tag" = "null" ]; then
-            echo "No GitHub Release yet — skipping upload."
-            echo "skip=1" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          echo "skip=0" >> "$GITHUB_OUTPUT"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload CLI onto latest release
-        if: steps.latest.outputs.skip != '1'
-        uses: softprops/action-gh-release@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          tag_name: ${{ steps.latest.outputs.tag }}
-          files: |
-            cli/cli.cjs
-            cli/paw-prints.cjs
-            cli/VERSION
-          fail_on_unmatched_files: true
+          node-version: '22'
+      - name: Exercise release validation failures in isolated fixtures
+        run: node --test scripts/release.test.mjs
+      - name: Verify staged assets without modifying a published release
+        shell: bash
+        run: |
+          version="$(tr -d '\r\n' < cli/VERSION)"
+          node scripts/verify-release.mjs "v${version}"
+          cmp cli/cli.cjs "releases/v${version}/cli.cjs"
+          cmp cli/paw-prints.cjs "releases/v${version}/paw-prints.cjs"

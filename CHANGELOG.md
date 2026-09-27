@@ -3,6 +3,19 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.8] - 2026-09-27
+
+Security and reliability release. Windows installer remains unsigned (no Authenticode certificate). Asset hashes and source revision are recorded in `releases/v0.2.8/release.json`.
+
+- Bind new seals to repository scope, exact file path and parent hash; retain honest legacy verification. Use immutable GitHub IDs for account ownership and refuse recycled-handle history claims.
+- Persist registry changes before success responses; serialize PostgreSQL writers; reject corrupt stores, oversized/slow bodies and replayed approvals. Normalize fingerprint lookups and make ambiguous lineage explicit.
+- Preserve foreign Git hooks and stdin, refuse ambiguous upgrades, handle deletion-only/new/multi-branch pushes, and sign index/outgoing Git blobs. Stop auto-staging untracked or partially staged shells. Restore recorded hooks on uninstall.
+- Keep keys after failed unlink, remove legacy backups on successful cleanup, and make cleanup retryable. Confirm code/repository mark transfers, freeze confirmed inputs, preserve settings after failed saves, and surface hook-install failures.
+- Verify overlay/report evidence, authenticate Action inputs/content/path confinement, label key-only evidence L1, and reject mismatched issuer keys. Fix Vue/Svelte/Next/Astro/Remix/Django integration paths.
+- Pin web setup to one release and verify both CLI asset hashes before installation. Remove mutable latest-release asset uploads. Add privacy/support pages and executable security, browser, database, hook and framework regressions.
+
+Known boundaries: profile keys are not DPAPI encrypted; historical unrecorded local hooks need explicit migration/removal; real GitHub OAuth and interactive Windows install/update/uninstall still require release-environment acceptance. Linux desktop remains uncleared because of the GTK/glib dependency advisory. Marketplace provisioning/cancellation/deletion policy and production TLS configuration are separate activation gates.
+
 ## [0.2.7] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.7` on Dev-Autographs and Dev-Autographs-Installer.

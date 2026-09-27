@@ -1,109 +1,51 @@
 # Dev Autographs Installer
 
-Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
+Windows desktop releases and the matching CLI for Dev Autographs.
 
-**Latest installer posted: 2026-09-26 (v0.2.7).** See [CHANGELOG.md](CHANGELOG.md).
+**Current release: v0.2.8.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.8) · [SHA-256 manifest](releases/v0.2.8/release.json) · [Changelog](CHANGELOG.md)
 
-- Download v0.2.7 (5.3 MB): [releases/v0.2.7/](releases/v0.2.7/) in this repo. SHA-256 `D918BAC2B55A23D6DEFB6D56079D92BDEA7FE85AF4C0A52796EE9F6B6CA5CB34`.
-- Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
-- Website and web desk: https://www.devautographs.com � [web desk](https://www.devautographs.com/desk.html)
-- App, CLI and registry source: https://github.com/Creal212/Dev-Autographs
-- **Bugs & help (Discord):** https://discord.gg/WZCxhjPwE ? [589 ManCave](https://discord.gg/WZCxhjPwE)
+This Windows release is **unsigned**: it has no Authenticode publisher certificate. SHA-256 checks detect differences from the published manifest; they do not establish an independently verified publisher or reproducible build. Windows may display an unknown-publisher warning.
 
-## Report a bug
+Requirements: Windows 10/11 x64, [Node.js 20+](https://nodejs.org/) on PATH, and Git. The installer includes the desk, its CLI, and the WebView2 bootstrapper. Hook installation happens when you explicitly link/configure the desk.
 
-Join **[589 ManCave on Discord](https://discord.gg/WZCxhjPwE)** for bug reports, questions, and setup help. That is the fastest place to reach the maintainer.
+## What the product verifies
 
-## What Dev Autographs is
+Dev Autographs signs file content with a device key. Version 2 seals also authenticate the repository scope, exact file path and optional parent hash. The registry associates approved device keys with GitHub's immutable account ID. Reports show valid signed evidence and registry status. They do not prove legal ownership, original authorship, an entire website's source coverage, or that a running page was built from those files.
 
-Developers sign the code they ship. Once linked to a GitHub account, every commit seals the staged source files with an Ed25519 signature and every push publishes the file fingerprints (hashes, never source) to a shared registry. Sites built from that code carry a small report; anyone presses **Shift + D** and sees who made it, ranked out of 100.
+Private keys are generated on the device. The registry receives the public key. Windows keys are stored in the user's profile and are **not DPAPI encrypted**. Protect your Windows account and any exported setup script. A setup script contains an encoded private key; delete it after use. Unlink only removes local key files after confirmed registry revocation; a network failure preserves the key for retry. Overwriting a file cannot guarantee physical erasure from SSDs or backups.
 
-**After install ? Ink GitHub ? lock your signatures, sit back and work as usual.** Global hooks attach your mark automatically on commit and push.
+## Install, update and remove
 
-Three pieces:
-
-| Piece | What it does |
+| Operation | Behavior |
 |---|---|
-| **Desk** (this installer) | Windows desktop app. Ink your GitHub, design and lock your autograph words, watch your ledger, manage the Stamp Room. Bundles the CLI and installs global git hooks. |
-| **Web desk** | The same flows in a browser at `/desk.html` on the website. Mints your key with WebCrypto, locks words, shows the ledger, and gives you a one-time setup script so local commits get signed too. |
-| **Registry** | Hosted API (Railway). Holds accounts, locked words, seal fingerprints, repo autographs. Device-bound keys: it never sees a private key. |
+| Install | Installs program files for the current Windows user. Linking GitHub creates the local identity and installs hooks with visible error/retry handling. |
+| Update | Replaces program files while preserving the profile identity and settings. |
+| Uninstall | Restores recorded Dev Autographs hooks before deleting program files. Ambiguous hook chains or missing prerequisites stop removal with an error. The profile identity remains; use Unlink first if you want registry revocation. |
 
-### The account model
+Foreign Git hooks are preserved. An ambiguous active hook plus backup is left intact for manual review. Historical local hooks installed by older versions were not inventoried: run `node <path-to-cli.cjs> remove-hooks` inside those repositories before removal. `remove-hooks --global` restores global hooks and local hooks recorded by v0.2.8. Some IDEs can bypass Git hooks; check the ledger instead of assuming every IDE action publishes.
 
-- **One GitHub account, any device. Last Ink wins.** Inking on a new device makes it the signer. The previous device is told the next time it opens or commits ("Someone inked @you on another device...") and stops sealing. If that was not you, secure your GitHub account and Ink again.
-- **Ledger follows the account.** Seals made with any key your GitHub ever held still count for you. Nothing is lost when you switch or lose a machine.
-- **Autograph words are locked and unique.** Your code mark and repo mark are yours across the whole registry, in either slot. Changing them asks for confirmation and transfers credit to the new wording. They survive re-ink, unlink, and new devices.
-- **Unlink** releases your key on the registry and shreds the local copy. Your history stays.
+## Verify downloads
 
-### What the installer does
-
-Three clear cases:
-
-| Case | What happens to your files |
-|---|---|
-| **Fresh install** | Installs the desk for the current user (no admin). After you Ink GitHub, identity and marks live in `%USERPROFILE%\.dev-autographs`. |
-| **Update** (app already installed) | Replaces **program files only**. Does **not** overwrite `identity.json`, locked marks, ledger cache, settings, or git hooks under `.dev-autographs`. |
-| **Uninstall** | Asks you to close the desk and any background sessions first, then removes the app. Does **not** delete `%USERPROFILE%\.dev-autographs` (optional checkbox only clears WebView app cache). Delete that folder yourself for a full wipe. |
-
-Also:
-
-- Start Menu folder *Dev Autographs*. Branded NSIS wizard.
-- Bundles the CLI (`paw-prints.cjs`) used for global git hooks (`core.hooksPath`), sealing, publishing, and the Shift + D report.
-- Connects to the hosted registry on its own. There is no URL to type.
-
-**Requirements:** Windows 10/11 x64, [Node.js 20+](https://nodejs.org) on `PATH`, and `git`.
-
-### Verify a download
-
-Each version ships as `Dev-Autographs_<version>_x64-setup.exe` plus a matching `.sha256`, both under `releases/<tag>/` in this repo and on the Releases page. Compare with:
+Each version directory and GitHub Release includes the installer, its `.sha256`, `cli.cjs`, `paw-prints.cjs`, `VERSION`, and `release.json`. The manifest records asset sizes, SHA-256 values and the source commit.
 
 ```powershell
-Get-FileHash .\Dev-Autographs_*_x64-setup.exe -Algorithm SHA256
+Get-FileHash .\Dev-Autographs_0.2.8_x64-setup.exe -Algorithm SHA256
 ```
 
-## `cli/` folder
+Compare that value with `release.json` and the `.sha256` file. Web desk setup uses the pinned version and checks both CLI hashes before writing files or executing them. There is no raw-main or mutable-latest fallback. Existing different local identities are preserved.
 
-`cli/cli.cjs`, `cli/paw-prints.cjs`, and `cli/VERSION` are the bundled command line, identical to the one inside the installer. The web desk's Windows (`.ps1`) and macOS/Linux (`.sh`) setup scripts download them from **the latest GitHub Release** (`releases/latest/download/?`), with a fallback to this folder on `main`.
+## Release procedure
 
-Every installer tag push attaches these three files to the Release automatically. Pushing updates under `cli/` on `main` also re-syncs them onto the latest Release. Keep them in step with each release ? copy from Dev-Autographs `packages/cli/bin/` when you post a new `.exe`.
+1. In [Dev-Autographs](https://github.com/Creal212/Dev-Autographs), update desktop versions, run `npm ci`, `npm run build`, `npm test`, `npm run smoke:registry`, browser tests and native tests. Run `npm run tauri:build`. Inspect the installer and confirm its embedded CLI matches the tested bundle.
+2. Commit all reviewed source and generated bundles. The source checkout must be clean, including untracked files.
+3. In this repository run `node scripts/prepare-release.mjs <source-checkout> <built-installer.exe> 0.2.8` using a new version. This stages matching CLI files and a manifest; it does not independently prove the supplied EXE was built from that source.
+4. Update the changelog and README, run `node scripts/verify-release.mjs v0.2.8`, review and commit only release changes, then push main and the new version tag. The tag workflow verifies the exact asset set and publishes it once. Existing published releases are never replaced by the workflow.
+5. Check the GitHub Release asset digests and then deploy the website with the same pinned version. A CLI update requires a new release version.
 
-## Releasing
+The optional manual GitHub build requires `INSTALLER_RELEASE_TOKEN` with read access to the source repository and write access here. Action revisions are pinned; the workflow builds and tests before packaging.
 
-1. In **Dev-Autographs**: bump `apps/desktop/package.json`, `src-tauri/Cargo.toml`, `src-tauri/tauri.conf.json`; `npm run tauri:build`; commit; `git tag vX.Y.Z`; push branch and tag.
-2. In **this repo**: add the `## [X.Y.Z] - YYYY-MM-DD` section to `CHANGELOG.md` (include the date the installer is posted), copy the freshly built `packages/cli/bin/cli.cjs` and `paw-prints.cjs` into `cli/`, write `cli/VERSION` as `X.Y.Z`, copy the built `.exe` to `releases/vX.Y.Z/Dev-Autographs_X.Y.Z_x64-setup.exe` and write its `.sha256` next to it (`Get-FileHash -Algorithm SHA256`), update the download line at the top of this README, commit, `git tag vX.Y.Z`, push branch and tag. The tag workflow publishes the `.exe` **and** the CLI files the web desk setups use.
-3. The tag push runs **Build and release Windows installer**, job `publish-prebuilt`: it creates the GitHub Release from the committed `.exe` and `.sha256` with the changelog section as the body. No secrets needed.
+## Support and source
 
-Building on GitHub instead: **Actions > Build and release Windows installer > Run workflow** with the Dev-Autographs ref and the version. Dev-Autographs is a private repo, so this path needs a repo secret `INSTALLER_RELEASE_TOKEN` (fine-grained PAT, Contents: read on Dev-Autographs, Contents: write here).
+[Website and web desk](https://www.devautographs.com/) · [Source](https://github.com/Creal212/Dev-Autographs) · [589 ManCave support](https://discord.gg/WZCxhjPwE)
 
-### Moving the registry
-
-Edit `registry.json` at the Dev-Autographs root, run `npm run registry:sync`, rebuild. The website has its own copy in `src/registry.js`. Nothing else needs to change; users never see or edit the URL.
-
-## Manual build
-
-```bash
-git clone https://github.com/Creal212/Dev-Autographs.git
-cd Dev-Autographs
-npm install && npm run build
-npm run tauri:build
-```
-
-The installer lands in `apps/desktop/src-tauri/target/release/bundle/nsis/`.
-
-## Security notes
-
-- Signing keys are device-bound. The desk, CLI or browser mints the Ed25519 pair and sends only the public half. The private key lives in `%USERPROFILE%\.dev-autographs\identity.json` (or the browser's storage for the web desk) and is destroyed on Unlink.
-- All signed requests carry a fresh timestamp and are replay-guarded on the registry.
-- The desk and the registry's HTML pages ship a strict Content-Security-Policy.
-- Per-IP rate limits on every route, with tighter buckets for writes, signature verification and operator routes.
-
-## Repos
-
-| Repo | Role |
-|---|---|
-| [Dev-Autographs](https://github.com/Creal212/Dev-Autographs) | Desk, CLI, registry, extension (monorepo) |
-| [www.devautographs.com](https://www.devautographs.com) | Marketing site + web desk (source: Dev-Autographs-Website) |
-| [Dev-Autographs-Installer](https://github.com/Creal212/Dev-Autographs-Installer) | This repo: releases, CLI bundle, changelog |
-
-Meet the dev: https://www.creal589.dev/  
-Bugs & help: https://discord.gg/WZCxhjPwE
+Report security issues privately as described in the source repository's SECURITY.md. GitHub Marketplace activation has separate provisioning, cancellation and data-deletion requirements; publishing this installer does not claim Marketplace approval.

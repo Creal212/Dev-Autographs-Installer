@@ -1,0 +1,3 @@
+# Release hashes cover exact published bytes on Windows and Linux checkouts.
+releases/** -text
+cli/* -text

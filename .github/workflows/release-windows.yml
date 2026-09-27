@@ -33,13 +33,24 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: installer-release-${{ github.event.inputs.version || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   publish-prebuilt:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout installer repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+
+      - name: Exercise release validation failures in isolated fixtures
+        run: node --test scripts/release.test.mjs
 
       - name: Locate committed installer for this tag
         id: files
@@ -48,8 +59,13 @@ jobs:
           tag="${GITHUB_REF_NAME}"
           ver="${tag#v}"
           dir="releases/${tag}"
-          exe=$(ls "${dir}"/*.exe 2>/dev/null | head -n1 || true)
-          if [ -z "$exe" ]; then
+          node scripts/verify-release.mjs "$tag"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Version already published; use a new tag. Published assets are never replaced." >&2
+            exit 1
+          fi
+          exe="${dir}/Dev-Autographs_${ver}_x64-setup.exe"
+          if [ ! -f "$exe" ]; then
             echo "No installer committed under ${dir}. Run the workflow manually to build one." >&2
             exit 1
           fi
@@ -57,11 +73,14 @@ jobs:
             echo "cli/cli.cjs and cli/paw-prints.cjs are required so web desk setup scripts stay current." >&2
             exit 1
           fi
-          # Stamp VERSION to match this tag (web desk .ps1/.sh print it).
-          printf '%s\n' "$ver" > cli/VERSION
+          cmp cli/cli.cjs "$dir/cli.cjs"
+          cmp cli/paw-prints.cjs "$dir/paw-prints.cjs"
+          test "$(tr -d '\r\n' < cli/VERSION)" = "$ver"
           echo "exe=${exe}" >> "$GITHUB_OUTPUT"
           echo "sha=${exe}.sha256" >> "$GITHUB_OUTPUT"
           echo "hash=$(cut -d' ' -f1 "${exe}.sha256")" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release body from CHANGELOG
         shell: bash
@@ -79,7 +98,7 @@ jobs:
           printf '\nWeb desk setup (.ps1 / .sh) installs **cli.cjs** from this release (same build).\n' >> release-body.md
 
       - name: Publish release (installer + CLI for web desk setups)
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           tag_name: ${{ github.ref_name }}
           name: Dev Autographs ${{ github.ref_name }}
@@ -87,16 +106,17 @@ jobs:
           files: |
             ${{ steps.files.outputs.exe }}
             ${{ steps.files.outputs.sha }}
-            cli/cli.cjs
-            cli/paw-prints.cjs
-            cli/VERSION
+            releases/${{ github.ref_name }}/cli.cjs
+            releases/${{ github.ref_name }}/paw-prints.cjs
+            releases/${{ github.ref_name }}/VERSION
+            releases/${{ github.ref_name }}/release.json
 
   windows-installer:
     if: github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     steps:
       - name: Checkout Dev-Autographs
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           repository: Creal212/Dev-Autographs
           ref: ${{ github.event.inputs.code_ink_ref }}
@@ -104,27 +124,44 @@ jobs:
           token: ${{ secrets.INSTALLER_RELEASE_TOKEN }}
 
       - name: Checkout installer repo (release notes)
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           path: installer
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: dev-autographs/package-lock.json
 
       - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
+        with:
+          toolchain: stable
 
       - name: Install dependencies
         working-directory: dev-autographs
         run: npm ci
 
+      - name: Require an unused version
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.event.inputs.version }}
+          GH_TOKEN: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          if ($env:RELEASE_TAG -notmatch '^v\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$') { throw 'Invalid version tag' }
+          gh release view $env:RELEASE_TAG --repo Creal212/Dev-Autographs-Installer *> $null
+          if ($LASTEXITCODE -eq 0) { throw 'Published versions cannot be replaced. Choose a new version.' }
+          $global:LASTEXITCODE = 0
+
       - name: Build monorepo (runs registry:sync first)
         working-directory: dev-autographs
-        run: npm run build
+        run: |
+          npm run build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Build Tauri NSIS installer
         working-directory: dev-autographs
@@ -134,25 +171,33 @@ jobs:
         id: artifact
         working-directory: dev-autographs
         shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.event.inputs.version }}
         run: |
-          $exe = Get-ChildItem -Path "apps/desktop/src-tauri/target/release/bundle/nsis" -Filter "*.exe" | Select-Object -First 1
+          $ver = $env:RELEASE_TAG.TrimStart("v")
+          $exe = Get-Item -LiteralPath "apps/desktop/src-tauri/target/release/bundle/nsis/Dev Autographs_${ver}_x64-setup.exe"
           if (-not $exe) { throw "NSIS installer not found" }
           $hash = (Get-FileHash $exe.FullName -Algorithm SHA256).Hash
           "path=$($exe.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "name=$($exe.Name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "sha256=$hash" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "$hash  $($exe.Name)" | Out-File -FilePath "$($exe.FullName).sha256" -Encoding ascii
-          $ver = "${{ github.event.inputs.version }}".TrimStart("v")
+          $ver = $env:RELEASE_TAG.TrimStart("v")
           New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE/cli-out" | Out-Null
           Copy-Item "packages/cli/bin/cli.cjs" "$env:GITHUB_WORKSPACE/cli-out/cli.cjs" -Force
           Copy-Item "packages/cli/bin/paw-prints.cjs" "$env:GITHUB_WORKSPACE/cli-out/paw-prints.cjs" -Force
           Set-Content -Path "$env:GITHUB_WORKSPACE/cli-out/VERSION" -Value $ver -NoNewline
+          node ../installer/scripts/prepare-release.mjs . $exe.FullName $ver
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "releaseDir=$env:GITHUB_WORKSPACE/installer/releases/$env:RELEASE_TAG" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
       - name: Release body from CHANGELOG
         id: notes
         shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.event.inputs.version }}
         run: |
-          $tag = "${{ github.event.inputs.version }}"
+          $tag = $env:RELEASE_TAG
           $md = Get-Content installer/CHANGELOG.md -Raw
           $m = [regex]::Match($md, "(?s)## \[$([regex]::Escape($tag.TrimStart('v')))\][^\n]*\n(.*?)(?=\n## \[|\z)")
           $body = if ($m.Success) { $m.Groups[1].Value.Trim() } else { "See CHANGELOG.md" }
@@ -161,18 +206,14 @@ jobs:
           Set-Content -Path release-body.md -Value $body
 
       - name: Publish to Dev-Autographs-Installer Releases
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           repository: Creal212/Dev-Autographs-Installer
           tag_name: ${{ github.event.inputs.version }}
           name: Dev Autographs ${{ github.event.inputs.version }}
           body_path: release-body.md
           files: |
-            ${{ steps.artifact.outputs.path }}
-            ${{ steps.artifact.outputs.path }}.sha256
-            cli-out/cli.cjs
-            cli-out/paw-prints.cjs
-            cli-out/VERSION
+            ${{ steps.artifact.outputs.releaseDir }}/*
           token: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}

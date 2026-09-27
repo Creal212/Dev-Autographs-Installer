@@ -1,0 +1,23 @@
+{
+  "version": "0.2.8",
+  "sourceCommit": "8a9849638e686be2116561efcc05e08de60c2467",
+  "sourceRepository": "https://github.com/Creal212/Dev-Autographs",
+  "files": {
+    "Dev-Autographs_0.2.8_x64-setup.exe": {
+      "sha256": "b3bdebe0deb4539a4102e5991345a074a311421b75c7dbd0f7242ccc9ebc3bef",
+      "size": 5599896
+    },
+    "cli.cjs": {
+      "sha256": "666d5ec4f848bb66f35af617e081f43fd0ba32d60bbaa08fe5b128f59021809d",
+      "size": 128075
+    },
+    "paw-prints.cjs": {
+      "sha256": "1d99bf41d741ac6a23f691a7272d1cb4bcc5600f6364f0878e48a50cfe3327de",
+      "size": 43
+    },
+    "VERSION": {
+      "sha256": "283571d2642fc7b3befd294f45d53b896a1d54d34c86235b13151192b380606a",
+      "size": 6
+    }
+  }
+}
