@@ -2,15 +2,13 @@
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
-**Latest installer posted: 2026-09-26 (v0.2.5).** See [CHANGELOG.md](CHANGELOG.md).
+**Latest installer posted: 2026-09-26 (v0.2.6).** See [CHANGELOG.md](CHANGELOG.md).
 
-- Download v0.2.5 (5.3 MB): [releases/v0.2.5/](releases/v0.2.5/) in this repo. SHA-256 `5D3919005140B4601FB5366AD4AD85B4348EF6A064EB89854DAB2CAB340AF67B`.
+- Download v0.2.6 (5.3 MB): [releases/v0.2.6/](releases/v0.2.6/) in this repo. SHA-256 `B14DA1930F41918FDEBAD917ECCD27FFAFD1B593821D20D3B3FEA4325135AE9A`.
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
-- Website and web desk: https://www.devautographs.com · [web desk](https://www.devautographs.com/desk.html)
+- Website and web desk: https://www.devautographs.com � [web desk](https://www.devautographs.com/desk.html)
 - App, CLI and registry source: https://github.com/Creal212/Dev-Autographs
-- **Bugs & help (Discord):** https://discord.gg/WZCxhjPwE — [589 ManCave](https://discord.gg/WZCxhjPwE)
-
-This repo does not contain the app source. It holds release tags, `.exe` downloads, `cli/` for the web desk setup script, and release notes.
+- **Bugs & help (Discord):** https://discord.gg/WZCxhjPwE ? [589 ManCave](https://discord.gg/WZCxhjPwE)
 
 ## Report a bug
 
@@ -20,7 +18,7 @@ Join **[589 ManCave on Discord](https://discord.gg/WZCxhjPwE)** for bug reports,
 
 Developers sign the code they ship. Once linked to a GitHub account, every commit seals the staged source files with an Ed25519 signature and every push publishes the file fingerprints (hashes, never source) to a shared registry. Sites built from that code carry a small report; anyone presses **Shift + D** and sees who made it, ranked out of 100.
 
-**After install → Ink GitHub → lock your signatures, sit back and work as usual.** Global hooks attach your mark automatically on commit and push.
+**After install ? Ink GitHub ? lock your signatures, sit back and work as usual.** Global hooks attach your mark automatically on commit and push.
 
 Three pieces:
 

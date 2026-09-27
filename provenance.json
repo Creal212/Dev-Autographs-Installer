@@ -2,8 +2,8 @@
   "version": "pawprints-attestation-v1",
   "app": "Creal212/Dev-Autographs-Installer",
   "versionLabel": "2026-09-27",
-  "buildHash": "1b3a581625c3bca89aeecc10497a692f1017af4174ad4d920e0fe634bfaa206e",
-  "createdAt": "2026-09-27T00:03:32.794Z",
+  "buildHash": "26eb2063d2530d8f9195cb4c1432abb0be2edf541a5f91357aa700afc1867c38",
+  "createdAt": "2026-09-27T00:18:18.575Z",
   "contributors": [
     {
       "signerId": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0",
@@ -17,5 +17,5 @@
     }
   ],
   "issuer": "MCowBQYDK2VwAyEAfRrAVkl4mJijQ91eyFP9XCr0B1p8NTSY6-7z0nAEko0",
-  "signature": "gm7Luv_bZHNQsTUBnAeK1oJeTAmq1vdEBklKiohkGa7bTOCrR51NEuG7iJyePMLeOE0KPG5A0mKMjPDq-m5yAw"
+  "signature": "oQgki1KSMeCQ7mQEBp5OmSRuKk4uKdaiuzm4jWyLCYkOIBihIWtqp7tMwLLw6zKQGnkR4X0fuWJLzSAi03nKBQ"
 }

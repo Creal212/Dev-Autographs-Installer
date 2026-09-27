@@ -3,6 +3,16 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.6] - 2026-09-26
+
+Installer posted: **2026-09-26**. Tag `v0.2.6` on Dev-Autographs and Dev-Autographs-Installer.
+File: `releases/v0.2.6/Dev-Autographs_0.2.6_x64-setup.exe` (5.3 MB), SHA-256 `B14DA1930F41918FDEBAD917ECCD27FFAFD1B593821D20D3B3FEA4325135AE9A`.
+
+### Agent 589 · Meet the Dev compliments
+- When Agent 589 walks up to (or stands on) the Meet the Dev portrait — on the marketing site and in the desk app — he drops a witty compliment from a shuffled bag so lines do not repeat often.
+- Opening the Meet tab in the desk also draws a random compliment.
+- Twenty lines in the bag, including "Who is this handsome fella?"
+
 ## [0.2.5] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.5` on Dev-Autographs and Dev-Autographs-Installer.
