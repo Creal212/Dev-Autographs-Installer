@@ -3,6 +3,20 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.12] - 2026-09-27
+
+Device-key possession, signature ownership isolation and explicit signing behavior. Source `e81cd86306d2a65856705d94a1bc185b828da5bd`; exact asset hashes are in `releases/v0.2.12/release.json`. The installer remains unsigned.
+
+- Require a signed server-issued device challenge before GitHub approval/account binding and token redemption. Approved proved sessions can resume safely. Older clients must update.
+- Reserve new visible basic Latin wording across immutable accounts. Keep all known key ownership history; moving signature wording preserves the account's history and releases only the old wording. Reclaiming that wording grants no old owner's records. Transfer history requires the current owner key; existing public signed copies can retain former wording.
+- Preserve first-time drafts and reject stale browser/native account responses, saves and unlink operations.
+- Linking installs no hooks; choose local or global signing explicitly. Automatic Repo Ink requires opt-in. Old generated wrappers stop safely until explicitly upgraded.
+- Stage only signature metadata at commit, run preserved controls against that index, then reject changed or removed signed evidence. Publish exact outgoing Git versions without changing the checkout.
+- Make website embedding explicit, unstaged, ownership-checked and reversible. Never silently overwrite foreign or edited output files. Report attribution uses signer keys and scoped paths, not matching display wording.
+- Reject noncanonical key/signature encodings and malformed contribution claims, bound overlay downloads, and ship a standalone bundled verifier.
+
+Exact release assets passed 23 actual installer assertions per Windows Server 2022/2025 VM in run 36343535830, including independent-account key decryption denial, preserved controls and safe cleanup. Interactive Windows 10/11, live OAuth and publisher signing remain separate limits. Marketplace remains disabled. This release does not establish universal feature acceptance or freedom from unknown vulnerabilities.
+
 ## [0.2.11] - 2026-09-27
 
 Security, availability and provenance correctness. Canonical source `506816cae72ac3a1a04dd993cf6c7520f83ab503` and asset hashes are recorded in `releases/v0.2.11/release.json`. The Windows installer remains unsigned.

@@ -2,15 +2,15 @@
 
 Windows desktop releases and the matching CLI for Dev Autographs.
 
-**Current release: v0.2.11.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.11) · [SHA-256 manifest](releases/v0.2.11/release.json) · [Changelog](CHANGELOG.md)
+**Current release: v0.2.12.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.12) · [SHA-256 manifest](releases/v0.2.12/release.json) · [Changelog](CHANGELOG.md)
 
 This Windows release is **unsigned**: it has no Authenticode publisher certificate. SHA-256 checks detect differences from the published manifest; they do not establish an independently verified publisher or reproducible build. Windows may display an unknown-publisher warning.
 
-Requirements: Windows 10/11 x64, [Node.js 20+](https://nodejs.org/) on PATH, and Git. The installer includes the desk, its CLI, and the WebView2 bootstrapper. Hook installation happens when you explicitly link/configure the desk.
+Requirements: Windows 10/11 x64, [Node.js 20+](https://nodejs.org/) on PATH, and Git. The installer includes the desk, its CLI, and the WebView2 bootstrapper. Linking creates an identity only. Enable repository or global signing hooks explicitly after linking; automatic Repo Ink is off by default.
 
 ## What the product verifies
 
-Dev Autographs signs file content with a device key. Version 2 seals also authenticate the repository scope, exact file path and optional parent hash. The registry associates approved device keys with GitHub's immutable account ID. Reports show valid signed evidence and registry status. They do not prove legal ownership, original authorship, an entire website's source coverage, or that a running page was built from those files.
+Dev Autographs signs file content with a device key. Version 2 seals also authenticate the repository scope, exact file path and optional parent hash. The registry verifies a session-bound key-possession signature before associating an approved device key with GitHub's immutable account ID. Reports show valid signed evidence and registry status. They do not prove legal ownership, original authorship, an entire website's source coverage, or that a running page was built from those files.
 
 Private keys are generated on the device; the registry receives the public key. **Version 0.2.9 encrypts the Windows signing key at rest with DPAPI for the current Windows user.** The desktop and setup use the same CLI storage implementation. Existing plaintext identities are migrated only after encryption and decryption verification succeed, using an atomic encrypted replacement. Matching legacy copies are then removed; conflicting identities and concurrent changes cause a visible error. Chosen autograph/style settings are preserved. Non-Windows CLI identities remain mode-0600 files. Version 0.2.8 and earlier store plaintext keys in the user profile.
 
@@ -22,9 +22,11 @@ DPAPI does not stop a process already running as your Windows user from requesti
 
 | Operation | Behavior |
 |---|---|
-| Install | Installs program files for the current Windows user. Linking GitHub creates the local identity and installs hooks with visible error/retry handling. |
+| Install | Installs program files for the current Windows user. Linking GitHub creates the local identity. Hook installation is a separate explicit action with error/retry handling. |
 | Update | Replaces program files while preserving the identity and settings. On first identity access, 0.2.9 migrates a plaintext signing key to DPAPI storage; public profile fields remain readable. |
 | Uninstall | Restores recorded Dev Autographs hooks before deleting program files. Ambiguous hook chains or missing prerequisites stop removal with an error. The profile identity remains; use Unlink first if you want registry revocation. |
+
+Commit hooks stage seal metadata before existing controls and verify the final index afterwards. Pushes publish actual outgoing Git objects without rewriting the checkout. Old generated wrappers stop before changes until explicitly upgraded with install-hooks. Website scripts require explicit sync-overlay, which lists unstaged changes and refuses unowned/modified outputs; remove-overlay restores recorded originals.
 
 Foreign Git hooks are preserved. An ambiguous active hook plus backup is left intact for manual review. Historical local hooks installed by older versions were not inventoried: run `node <path-to-cli.cjs> remove-hooks` inside those repositories before removal. `remove-hooks --global` restores global hooks and local hooks recorded by v0.2.8 and later. Some IDEs can bypass Git hooks; check the ledger instead of assuming every IDE action publishes.
 
@@ -33,7 +35,7 @@ Foreign Git hooks are preserved. An ambiguous active hook plus backup is left in
 Each version directory and GitHub Release includes the installer, its `.sha256`, `cli.cjs`, `paw-prints.cjs`, `VERSION`, and `release.json`. The manifest records asset sizes, SHA-256 values and the source commit.
 
 ```powershell
-Get-FileHash .\Dev-Autographs_0.2.11_x64-setup.exe -Algorithm SHA256
+Get-FileHash .\Dev-Autographs_0.2.12_x64-setup.exe -Algorithm SHA256
 ```
 
 Compare that value with `release.json` and the `.sha256` file. Web desk setup uses the pinned version and checks both CLI hashes before writing files or executing them. There is no raw-main or mutable-latest fallback. Existing different local identities are preserved.
@@ -42,15 +44,15 @@ Compare that value with `release.json` and the `.sha256` file. Web desk setup us
 
 1. In [Dev-Autographs](https://github.com/Creal212/Dev-Autographs), update desktop versions, run `npm ci`, `npm run build`, `npm test`, `npm run smoke:registry`, browser tests and native tests. Run `npm run tauri:build`. Inspect the installer and confirm its embedded CLI matches the tested bundle.
 2. Commit all reviewed source and generated bundles. The source checkout must be clean, including untracked files.
-3. In this repository run `node scripts/prepare-release.mjs <source-checkout> <built-installer.exe> 0.2.11` using a new version. This stages matching CLI files and a manifest; it does not independently prove the supplied EXE was built from that source.
-4. Update the changelog and README, run `node scripts/verify-release.mjs v0.2.11`, review and commit only release changes, then push main and the new version tag. The tag workflow verifies the exact asset set, requires an explicit GitHub HTTP 404 before creation, and uses create-only publication with no overwrite fallback. A racing or existing release cannot be updated. API errors stop publication; upload failures require inspection before retrying.
+3. In this repository run `node scripts/prepare-release.mjs <source-checkout> <built-installer.exe> 0.2.12` using a new version. This stages matching CLI files and a manifest; it does not independently prove the supplied EXE was built from that source.
+4. Update the changelog and README, run `node scripts/verify-release.mjs v0.2.12`, review and commit only release changes, then push main and the new version tag. The tag workflow verifies the exact asset set, requires an explicit GitHub HTTP 404 before creation, and uses create-only publication with no overwrite fallback. A racing or existing release cannot be updated. API errors stop publication; upload failures require inspection before retrying.
 5. Check the GitHub Release asset digests and then deploy the website with the same pinned version. A CLI update requires a new release version.
 
 The optional manual GitHub build requires an unused version tag already pushed to this repository and `INSTALLER_RELEASE_TOKEN` with read access to the source repository and write access here. Action revisions are pinned; the workflow builds and tests before packaging. Both publishing paths verify the tag and create a new release with its assets; neither can update an existing release. Run `node --test scripts/release.test.mjs scripts/publish-release.test.mjs` to exercise preparation, integrity, API-error and publication-race failures in isolated fixtures.
 
 ## Acceptance limits
 
-The v0.2.11 installer passed real silent clean install, v0.2.8 upgrade, ambiguous-hook uninstall refusal, successful uninstall, and independent-account DPAPI/CLI denial on disposable **Windows Server 2022 and 2025** VMs. Identity, settings and foreign controls were preserved as required. [Verified run 36338491108](https://github.com/Creal212/Dev-Autographs-Installer/actions/runs/36338491108) tested the exact committed release assets from `cf7f7b47e5c50d3d709bd8112a0bc7e01711e474`.
+The v0.2.12 installer passed 23 real silent lifecycle assertions on each of disposable Windows Server 2022 and 2025 VMs: clean install, v0.2.8 upgrade, independent-account DPAPI/CLI denial, ambiguous-hook uninstall refusal, successful uninstall, and cleanup. Identity, settings and foreign controls were preserved. [Verified run 36343535830](https://github.com/Creal212/Dev-Autographs-Installer/actions/runs/36343535830) tested exact committed release assets from 83d5b1e1cb59206abe1b63d0a238dc5bcf94fb1a. The final release commit changes documentation only.
 
 The manual [Windows installer acceptance workflow](.github/workflows/windows-acceptance.yml) defaults to committed `cli/VERSION`, or an explicit target version. [Scope, safety guards and evidence](docs/WINDOWS-ACCEPTANCE.md) describe its assertions. Local release/harness tests pass 38/38.
 
