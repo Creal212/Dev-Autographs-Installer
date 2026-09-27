@@ -6,6 +6,7 @@ Dates are the day the installer was posted (UTC). Format follows Keep a Changelo
 ## [0.2.5] - 2026-09-26
 
 Installer posted: **2026-09-26**. Tag `v0.2.5` on Dev-Autographs and Dev-Autographs-Installer.
+File: `releases/v0.2.5/Dev-Autographs_0.2.5_x64-setup.exe` (5.3 MB), SHA-256 `5D3919005140B4601FB5366AD4AD85B4348EF6A064EB89854DAB2CAB340AF67B`.
 
 ### Signature transfer
 - Changing a locked code mark **moves all credit** (seals + history under every key on the account) onto the new wording and **frees the old name** so someone else can claim it.
