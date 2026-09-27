@@ -38,6 +38,39 @@ export function nodePreloadOption(file) {
   return `--require "${file.replaceAll('\\', '/')}"`;
 }
 
+export function archiveOwnedProfile(source, root) {
+  const destination = path.join(root, 'retained-upgrade-profile');
+  assert.equal(path.basename(source), '.dev-autographs', 'Unexpected profile archive source');
+  assert.equal(fs.realpathSync(source), path.resolve(source), 'Profile archive source cannot be a link');
+  assert.equal(fs.realpathSync(root), path.resolve(root), 'Profile archive root cannot be a link');
+  assert.equal(fs.readFileSync(path.join(source, '.acceptance-owner'), 'utf8'), path.resolve(root), 'Profile archive ownership mismatch');
+  assertInside(root, destination);
+  assert.equal(fs.existsSync(destination), false, 'Archive destination already exists');
+  const snapshot = directory => {
+    const files = {};
+    const walk = current => {
+      const stat = fs.lstatSync(current);
+      assert.equal(stat.isSymbolicLink(), false, 'Links are forbidden in the owned profile archive');
+      if (stat.isDirectory()) for (const name of fs.readdirSync(current).sort()) walk(path.join(current, name));
+      else {
+        assert.ok(stat.isFile(), 'Only regular fixture files may be archived');
+        files[path.relative(directory, current)] = hash(current);
+      }
+    };
+    walk(directory);
+    return files;
+  };
+  const original = snapshot(source);
+  // Hosted profiles are on C: while RUNNER_TEMP is on D:. Rename is not portable.
+  fs.cpSync(source, destination, {recursive: true, errorOnExist: true, force: false});
+  assert.deepEqual(snapshot(destination), original, 'Archived bytes must match before retiring source');
+  assert.deepEqual(snapshot(source), original, 'Source changed during archive; preserve it');
+  assert.equal(fs.realpathSync(source), path.resolve(source), 'Profile source changed into a link');
+  assert.equal(fs.readFileSync(path.join(source, '.acceptance-owner'), 'utf8'), path.resolve(root));
+  fs.rmSync(source, {recursive: true});
+  return destination;
+}
+
 const digest = value => createHash('sha256').update(value).digest('hex');
 const hash = file => digest(fs.readFileSync(file));
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
@@ -168,7 +201,8 @@ function uninstalled(root) {
   const log = fs.readFileSync(process.env.DA_ACCEPTANCE_HOOK_LOG, 'utf8');
   for (const marker of ['local-pre-commit', 'local-post-commit', 'global-pre-commit', 'global-post-commit']) assert.ok(log.includes(marker));
   passed('Normal Git commits execute restored foreign controls after uninstall');
-  fs.renameSync(home, path.join(root, 'retained-upgrade-profile'));
+  archiveOwnedProfile(home, root);
+  passed('Verified an exact copy of the owned encrypted profile before preparing the separate fresh-install fixture');
 }
 
 function fresh(root, install, version) {

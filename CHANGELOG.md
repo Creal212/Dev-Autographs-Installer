@@ -3,6 +3,19 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.10] - 2026-09-27
+
+Browser session integrity, automatic Marketplace reconciliation and local fonts. Canonical source `a0e88b0486081b8e515b5aee4f46b6e76fa146ec` and exact asset hashes are recorded in `releases/v0.2.10/release.json`. The Windows installer remains unsigned.
+
+- Bind late browser mark/unlink/status/login replies to the identity and attempt that began them; preserve newer accounts, keys and pending connections.
+- Preserve malformed or incomplete stored browser identities instead of replacing them during login. Prevent old summaries from undoing a newer saved mark; bind fingerprints and verification results to current input.
+- Add automatic Marketplace reconciliation with committed leases, bounded batches, failure backoff, fail-closed freshness and backlog diagnostics. Stale worker/admin/webhook snapshots cannot cancel a newer purchase. Marketplace remains disabled pending live provider and policy acceptance.
+- Bundle the desktop's existing font families and serve website fonts locally with original licenses and SHA-256 provenance. Remove Google font/style permissions from their CSPs. Generated overlays in other projects retain their own configuration.
+- Backport the exact upstream two-line GLib iterator fix for Linux while retaining the original 0.18.5 version/license. Optimized regressions pass; reverting only the fix reproduces SIGSEGV. This is not full Linux desktop release acceptance or an automatic advisory dismissal.
+- Add guarded real NSIS install/update/uninstall and independent-Windows-account DPAPI acceptance on disposable hosted runners. The release acceptance document records the exact runtime result; interactive Windows 10/11, SmartScreen and live OAuth remain separate gates.
+
+DPAPI, matching CLI storage and safe hook restoration continue from 0.2.9. After protected identity migration, do not downgrade to 0.2.8. This release does not activate a Marketplace listing or promise zero vulnerabilities.
+
 ## [0.2.9] - 2026-09-27
 
 Windows key-storage, Marketplace preparation and recovery hardening. Asset checksums and canonical source commit `cb5dc3e1716fc6d85608182c0f9aabcf85b07cfa` are recorded in `releases/v0.2.9/release.json`. The installer remains unsigned (no Authenticode publisher certificate).

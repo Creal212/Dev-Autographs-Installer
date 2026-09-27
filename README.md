@@ -2,7 +2,7 @@
 
 Windows desktop releases and the matching CLI for Dev Autographs.
 
-**Current release: v0.2.9.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.9) · [SHA-256 manifest](releases/v0.2.9/release.json) · [Changelog](CHANGELOG.md)
+**Current release: v0.2.10.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.10) · [SHA-256 manifest](releases/v0.2.10/release.json) · [Changelog](CHANGELOG.md)
 
 This Windows release is **unsigned**: it has no Authenticode publisher certificate. SHA-256 checks detect differences from the published manifest; they do not establish an independently verified publisher or reproducible build. Windows may display an unknown-publisher warning.
 
@@ -33,7 +33,7 @@ Foreign Git hooks are preserved. An ambiguous active hook plus backup is left in
 Each version directory and GitHub Release includes the installer, its `.sha256`, `cli.cjs`, `paw-prints.cjs`, `VERSION`, and `release.json`. The manifest records asset sizes, SHA-256 values and the source commit.
 
 ```powershell
-Get-FileHash .\Dev-Autographs_0.2.9_x64-setup.exe -Algorithm SHA256
+Get-FileHash .\Dev-Autographs_0.2.10_x64-setup.exe -Algorithm SHA256
 ```
 
 Compare that value with `release.json` and the `.sha256` file. Web desk setup uses the pinned version and checks both CLI hashes before writing files or executing them. There is no raw-main or mutable-latest fallback. Existing different local identities are preserved.
@@ -42,15 +42,15 @@ Compare that value with `release.json` and the `.sha256` file. Web desk setup us
 
 1. In [Dev-Autographs](https://github.com/Creal212/Dev-Autographs), update desktop versions, run `npm ci`, `npm run build`, `npm test`, `npm run smoke:registry`, browser tests and native tests. Run `npm run tauri:build`. Inspect the installer and confirm its embedded CLI matches the tested bundle.
 2. Commit all reviewed source and generated bundles. The source checkout must be clean, including untracked files.
-3. In this repository run `node scripts/prepare-release.mjs <source-checkout> <built-installer.exe> 0.2.9` using a new version. This stages matching CLI files and a manifest; it does not independently prove the supplied EXE was built from that source.
-4. Update the changelog and README, run `node scripts/verify-release.mjs v0.2.9`, review and commit only release changes, then push main and the new version tag. The tag workflow verifies the exact asset set, requires an explicit GitHub HTTP 404 before creation, and uses create-only publication with no overwrite fallback. A racing or existing release cannot be updated. API errors stop publication; upload failures require inspection before retrying.
+3. In this repository run `node scripts/prepare-release.mjs <source-checkout> <built-installer.exe> 0.2.10` using a new version. This stages matching CLI files and a manifest; it does not independently prove the supplied EXE was built from that source.
+4. Update the changelog and README, run `node scripts/verify-release.mjs v0.2.10`, review and commit only release changes, then push main and the new version tag. The tag workflow verifies the exact asset set, requires an explicit GitHub HTTP 404 before creation, and uses create-only publication with no overwrite fallback. A racing or existing release cannot be updated. API errors stop publication; upload failures require inspection before retrying.
 5. Check the GitHub Release asset digests and then deploy the website with the same pinned version. A CLI update requires a new release version.
 
 The optional manual GitHub build requires an unused version tag already pushed to this repository and `INSTALLER_RELEASE_TOKEN` with read access to the source repository and write access here. Action revisions are pinned; the workflow builds and tests before packaging. Both publishing paths verify the tag and create a new release with its assets; neither can update an existing release. Run `node --test scripts/release.test.mjs scripts/publish-release.test.mjs` to exercise preparation, integrity, API-error and publication-race failures in isolated fixtures.
 
 ## Acceptance limits
 
-Synthetic Windows tests verify real DPAPI encryption/decryption, signing, CLI/native process interoperability, migration, concurrent-write rejection, and preservation after failed revocation. Those checks do not establish a completed interactive installer lifecycle. A clean install, update and uninstall in an isolated Windows Sandbox/VM, and decryption attempted as a second Windows user, have **not been run** for this release preparation. No provisioned Sandbox/VM was available on the build machine. The installer remains unsigned; hash checks and archive inspection do not replace publisher signing or those runtime acceptance checks.
+Synthetic Windows tests verify real DPAPI encryption/decryption, signing, CLI/native process interoperability, migration, concurrent-write rejection, and preservation after failed revocation. Those checks do not establish a completed interactive installer lifecycle. A clean install, update and uninstall in an isolated Windows Sandbox/VM, and decryption attempted as a second Windows user, have **not been run** for this release preparation. No provisioned Sandbox/VM was available on the build machine. The installer remains unsigned; hash checks do not replace publisher signing or interactive Windows 10/11 acceptance.
 
 The manual [Windows installer acceptance workflow](.github/workflows/windows-acceptance.yml) tests an upgrade from v0.2.8 to the committed `cli/VERSION` (or an explicit target version), fresh installation, foreign-hook preservation, real uninstall and second-account DPAPI denial on disposable GitHub Windows VMs. A complete passing hosted run is pending. [Test scope, guards and remaining boundaries](docs/WINDOWS-ACCEPTANCE.md) explain the distinction between local harness checks and passing installer runtime evidence.
 

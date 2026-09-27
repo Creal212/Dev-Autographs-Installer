@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {assertHostedRunner, assertInside, nodePreloadOption, targetVersion} from './windows-acceptance-fixture.mjs';
+import {assertHostedRunner, assertInside, nodePreloadOption, targetVersion, archiveOwnedProfile} from './windows-acceptance-fixture.mjs';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const valid = {GITHUB_ACTIONS: 'true', RUNNER_ENVIRONMENT: 'github-hosted', RUNNER_OS: 'Windows', GITHUB_REPOSITORY: 'Creal212/Dev-Autographs-Installer', GITHUB_EVENT_NAME: 'workflow_dispatch', GITHUB_RUN_ID: '123', RUNNER_TEMP: '/runner/temp', GITHUB_WORKSPACE: '/runner/workspace', USERPROFILE: '/runner/home'};
@@ -36,6 +36,40 @@ test('fixture cleanup scope rejects parent, sibling-prefix and traversal targets
 test('target version accepts DPAPI releases and refuses unsupported or injected paths', () => {
   for (const value of ['0.2.9', '0.2.10', '1.0.0']) assert.equal(targetVersion(value), value);
   for (const value of ['', '0.2.8', '0.1.90', '../0.2.9', '0.2.9; exit 0', 'v0.2.9', '0.2.9\n--flag']) assert.throws(() => targetVersion(value));
+});
+test('owned profile archive copies and verifies bytes without a cross-volume rename', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'da profile archive '));
+  try {
+    const source = path.join(root, 'profile', '.dev-autographs');
+    const destinationRoot = path.join(root, 'runner temp');
+    fs.mkdirSync(path.join(source, 'hooks'), {recursive: true});
+    fs.mkdirSync(destinationRoot);
+    fs.writeFileSync(path.join(source, '.acceptance-owner'), path.resolve(destinationRoot));
+    fs.writeFileSync(path.join(source, 'identity.json'), '{"synthetic":"encrypted-placeholder"}');
+    fs.writeFileSync(path.join(source, 'hooks', 'pre-commit'), '#!/bin/sh\nexit 0\n');
+    const archived = archiveOwnedProfile(source, destinationRoot);
+    assert.equal(fs.existsSync(source), false);
+    assert.equal(fs.readFileSync(path.join(archived, 'identity.json'), 'utf8'), '{"synthetic":"encrypted-placeholder"}');
+    assert.equal(fs.readFileSync(path.join(archived, 'hooks', 'pre-commit'), 'utf8'), '#!/bin/sh\nexit 0\n');
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
+test('profile archive refuses unowned data and an existing destination without changing either', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'da archive refusal '));
+  try {
+    const source = path.join(root, 'profile', '.dev-autographs');
+    fs.mkdirSync(source, {recursive: true});
+    const marker = path.join(source, '.acceptance-owner');
+    fs.writeFileSync(marker, 'different fixture');
+    assert.throws(() => archiveOwnedProfile(source, root), /ownership mismatch/);
+    assert.equal(fs.readFileSync(marker, 'utf8'), 'different fixture');
+    fs.writeFileSync(marker, path.resolve(root));
+    const dest = path.join(root, 'retained-upgrade-profile');
+    fs.mkdirSync(dest);
+    fs.writeFileSync(path.join(dest, 'keep'), 'existing');
+    assert.throws(() => archiveOwnedProfile(source, root), /already exists/);
+    assert.equal(fs.readFileSync(path.join(dest, 'keep'), 'utf8'), 'existing');
+    assert.equal(fs.existsSync(source), true);
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });
 test('network guard preload survives actual Node option parsing with spaces and Windows separators', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'da preload path '));

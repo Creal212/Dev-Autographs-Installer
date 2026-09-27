@@ -1,3 +1,5 @@
 # Release hashes cover exact published bytes on Windows and Linux checkouts.
 releases/** -text
 cli/* -text
+# Versioned launchers preserve the packaged CRLF bytes covered by the manifest.
+releases/*/paw-prints.cjs whitespace=cr-at-eol
