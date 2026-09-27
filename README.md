@@ -1,14 +1,14 @@
-# Dev Autographs Installer
+﻿# Dev Autographs Installer
 
 Windows installer releases, the single-file CLI, and the changelog for **Dev Autographs**: a vermilion stamp for every file you ship.
 
 **Latest installer posted: 2026-09-26 (v0.2.5).** See [CHANGELOG.md](CHANGELOG.md).
 
-- Download v0.2.5: [releases/v0.2.5/](releases/v0.2.5/) in this repo (hash filled when the build is posted).
+- Download v0.2.5 (5.3 MB): [releases/v0.2.5/](releases/v0.2.5/) in this repo. SHA-256 `5D3919005140B4601FB5366AD4AD85B4348EF6A064EB89854DAB2CAB340AF67B`.
 - Releases page: https://github.com/Creal212/Dev-Autographs-Installer/releases/latest
-- Website and web desk: https://www.devautographs.com � [web desk](https://www.devautographs.com/desk.html)
+- Website and web desk: https://www.devautographs.com · [web desk](https://www.devautographs.com/desk.html)
 - App, CLI and registry source: https://github.com/Creal212/Dev-Autographs
-- **Bugs & help (Discord):** https://discord.gg/WZCxhjPwE ? [589 ManCave](https://discord.gg/WZCxhjPwE)
+- **Bugs & help (Discord):** https://discord.gg/WZCxhjPwE — [589 ManCave](https://discord.gg/WZCxhjPwE)
 
 This repo does not contain the app source. It holds release tags, `.exe` downloads, `cli/` for the web desk setup script, and release notes.
 
