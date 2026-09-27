@@ -3,6 +3,20 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.11] - 2026-09-27
+
+Security, availability and provenance correctness. Canonical source `506816cae72ac3a1a04dd993cf6c7520f83ab503` and asset hashes are recorded in `releases/v0.2.11/release.json`. The Windows installer remains unsigned.
+
+- Verify Repo Ink against GitHub's immutable current owner ID and complete repository metadata. Recheck authorization after provider requests, without holding the registry lock during those requests.
+- Keep repository histories separate. Matching client-asserted content hashes cannot block another repository owner; related claims are nonexclusive. Preserve superseded history and make transferred repositories revocable by their current owner.
+- Bound store queues, database locks, queries and whole operations. Expired work cannot write later or return a late success. Check deferred constraints while rollback remains available; do not automatically retry writes after an uncertain COMMIT acknowledgement.
+- Validate signatures before reading source files for CLI/Action attestations; verify current bytes, canonical paths, file types and size bounds. Count path aliases once and label key-only evidence L1.
+- Split CLI publication within both record and body limits, retain retry state after partial failure, preserve dotted GitHub repository names, and protect generated outputs from repository-provided links.
+- Validate pending browser keys before login, preserve damaged storage and retry keys, and bound registry responses. Recover stalled overlays with visible retry controls and reject stale responses after reopening.
+- Pass real silent install, upgrade, foreign-account DPAPI denial, hook refusal/restoration and uninstall checks on Windows Server 2022/2025 using the exact committed installer. Interactive Windows 10/11 and live OAuth remain unverified.
+
+This release keeps Marketplace disabled. The singleton JSON ledger and process-local rate limits remain scaling constraints. Local load measurements are workload evidence, not a production capacity guarantee.
+
 ## [0.2.10] - 2026-09-27
 
 Browser session integrity, automatic Marketplace reconciliation and local fonts. Canonical source `a0e88b0486081b8e515b5aee4f46b6e76fa146ec` and exact asset hashes are recorded in `releases/v0.2.10/release.json`. The Windows installer remains unsigned.
