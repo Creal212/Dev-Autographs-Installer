@@ -167,6 +167,7 @@ const net = require('net'); net.connect = fail; net.createConnection = fail;
   if ($LASTEXITCODE -ne 0) { throw 'Could not grant the temporary test account its fixture directory.' }
   Copy-Item -LiteralPath $runnerProfile.node -Destination (Join-Path $other 'node.exe')
   Copy-Item -LiteralPath (Join-Path $install 'cli.cjs') -Destination (Join-Path $other 'cli.cjs')
+  Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'windows-acceptance-home.cjs') -Destination (Join-Path $other 'home.cjs')
   Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'windows-dpapi-other-user.ps1') -Destination (Join-Path $other 'probe.ps1')
   $childIdentityDir = Join-Path $other 'profile\.dev-autographs'
   New-Item -ItemType Directory -Path $childIdentityDir -Force | Out-Null

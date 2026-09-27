@@ -44,7 +44,7 @@ try {
   $env:PAWPRINTS_API = 'http://127.0.0.1:1'
   $node = Join-Path $FixtureDirectory 'node.exe'
   $cli = Join-Path $FixtureDirectory 'cli.cjs'
-  $actualHome = & $node -e 'process.stdout.write(require("os").homedir())'
+  $actualHome = & $node (Join-Path $FixtureDirectory 'home.cjs')
   if ($LASTEXITCODE -ne 0 -or $actualHome -ne $env:USERPROFILE) { throw 'Child profile isolation failed' }
   $public = Invoke-PrivateCli $node $cli 'identity-public'
   if ($public.code -ne 0 -or (($public.output | ConvertFrom-Json).publicKey -ne $inputData.publicKey)) { throw 'Public identity read failed' }

@@ -49,6 +49,22 @@ test('network guard preload survives actual Node option parsing with spaces and 
     assert.throws(() => nodePreloadOption('bad" --eval evil'));
   } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });
+test('independent-account helpers preserve paths and capture expected CLI failure under Windows PowerShell 5.1', {skip: process.platform !== 'win32'}, () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'da PS helper path '));
+  try {
+    const profile = path.join(root, 'synthetic profile');
+    const fake = path.join(root, 'fake cli.cjs');
+    fs.writeFileSync(fake, 'if(process.argv[2] === "public") process.stdout.write(JSON.stringify({publicKey:"synthetic"})); else {process.stderr.write("expected denial");process.exitCode=1;}');
+    const quote = value => `'${value.replaceAll("'", "''")}'`;
+    const probe = path.join(directory, 'windows-dpapi-other-user.ps1');
+    // Load only the pure process-capture function, not the account/DPAPI test body.
+    const script = `$ErrorActionPreference='Stop';$tokens=$null;$errors=$null;$ast=[System.Management.Automation.Language.Parser]::ParseFile(${quote(probe)},[ref]$tokens,[ref]$errors);$fn=$ast.Find({param($n)$n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Invoke-PrivateCli'},$true);Invoke-Expression $fn.Extent.Text;$homeResult=& ${quote(process.execPath)} ${quote(path.join(directory, 'windows-acceptance-home.cjs'))};if($LASTEXITCODE -ne 0 -or $homeResult -ne $env:USERPROFILE){throw 'Home probe failed'};$public=Invoke-PrivateCli ${quote(process.execPath)} ${quote(fake)} public;if($public.code -ne 0 -or ($public.output|ConvertFrom-Json).publicKey -ne 'synthetic'){throw 'Public probe failed'};$denied=Invoke-PrivateCli ${quote(process.execPath)} ${quote(fake)} private;if($denied.code -ne 1 -or $denied.output -ne ''){throw 'Expected failure was not captured'};Write-Output 'helpers passed'`;
+    const result = spawnSync('powershell.exe', ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', script], {encoding: 'utf8', windowsHide: true, timeout: 30000, env: {...process.env, USERPROFILE: profile, HOME: profile, NODE_OPTIONS: ''}});
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.match(result.stdout, /helpers passed/);
+    assert.equal(fs.existsSync(path.join(profile, '.dev-autographs')), false, 'Helpers must not create product identity data');
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
 test('fixture executable refuses an unguarded process without creating a profile', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'da-acceptance-refusal-'));
   try {
