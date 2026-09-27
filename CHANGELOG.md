@@ -3,6 +3,24 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.9] - 2026-09-27
+
+Windows key-storage, Marketplace preparation and recovery hardening. Asset checksums and canonical source commit `cb5dc3e1716fc6d85608182c0f9aabcf85b07cfa` are recorded in `releases/v0.2.9/release.json`. The installer remains unsigned (no Authenticode publisher certificate).
+
+- Encrypt the Windows signing private key at rest with DPAPI scoped to the current Windows user. Desktop and setup import identity JSON through the matching CLI's stdin, without plaintext key arguments or temporary identity files. Non-Windows CLI storage remains mode0600.
+- Migrate existing plaintext identities only after verified encryption and atomic persistence; retire matching legacy/backups after success. Preserve chosen marks/style, public key history and immutable-account GitHub renames. Refuse different identities, malformed protected keys, unsafe links and concurrent changes.
+- Read public profile metadata without decrypting an already protected key. Propagate protected-key read failures instead of generating a replacement key. Validate the helper's explicit signer/storage success response so an older incompatible CLI cannot falsely report a successful save.
+- Save local mark changes only after registry acceptance. Preserve concurrent local edits, retain keys after failed revocation, and coordinate cleanup through the storage lock without modifying hard-link targets.
+- Publish releases through a create-only path with verified assets and an existing version tag. Only an explicit HTTP404 permits creation; API/auth/network failures stop publication. Existing or racing releases are never updated, and no asset-overwrite fallback is used.
+- Add actual Windows DPAPI and native-to-CLI interoperability tests, stdin import and failed profile-publication regressions, plus isolated release-creation/error/race tests.
+- Add disabled-by-default personal-account Marketplace purchase verification, signed lifecycle webhooks, cancellation replay protection, operator reconciliation/maintenance and explicitly confirmed purge. Activation still requires configured plans/secrets and an agreed customer-data policy.
+- Fix browser re-login completion and overlapping-tab cleanup; an older login cannot cancel a newer pending attempt. Slow GitHub purchase requests no longer hold the registry store lock.
+- Add scoped database CA/name verification and encrypted backup/empty-target restore tooling, with real TLS and PostgreSQL failure tests.
+
+**Upgrade boundary:** after 0.2.9 migrates an identity, do not downgrade to 0.2.8 or run an older desk/CLI concurrently. Install matching 0.2.9-or-newer components. DPAPI protects the key at rest, not against code already running as the same Windows user. Exported setup scripts still contain an encoded private key; delete them after use. File deletion does not guarantee physical erasure from backups or SSDs.
+
+Known acceptance limits: isolated NSIS clean install/update/uninstall and an actual second-Windows-user decryption attempt have not been run during release preparation; no provisioned Sandbox/VM was available. Authenticode signing, live GitHub OAuth acceptance, and Marketplace activation remain separate release/operational checks. Historical unrecorded local Git hooks still require explicit migration/removal. Linux desktop remains uncleared because of the GTK/glib dependency advisory.
+
 ## [0.2.8] - 2026-09-27
 
 Security and reliability release. Windows installer remains unsigned (no Authenticode certificate). Asset hashes and source revision are recorded in `releases/v0.2.8/release.json`.

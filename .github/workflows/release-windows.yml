@@ -50,7 +50,7 @@ jobs:
           node-version: '22'
 
       - name: Exercise release validation failures in isolated fixtures
-        run: node --test scripts/release.test.mjs
+        run: node --test scripts/release.test.mjs scripts/publish-release.test.mjs
 
       - name: Locate committed installer for this tag
         id: files
@@ -60,10 +60,7 @@ jobs:
           ver="${tag#v}"
           dir="releases/${tag}"
           node scripts/verify-release.mjs "$tag"
-          if gh release view "$tag" >/dev/null 2>&1; then
-            echo "Version already published; use a new tag. Published assets are never replaced." >&2
-            exit 1
-          fi
+          node scripts/publish-release.mjs check "$tag"
           exe="${dir}/Dev-Autographs_${ver}_x64-setup.exe"
           if [ ! -f "$exe" ]; then
             echo "No installer committed under ${dir}. Run the workflow manually to build one." >&2
@@ -97,19 +94,11 @@ jobs:
             "${{ steps.files.outputs.hash }}" "$(date -u +%Y-%m-%d)" >> release-body.md
           printf '\nWeb desk setup (.ps1 / .sh) installs **cli.cjs** from this release (same build).\n' >> release-body.md
 
-      - name: Publish release (installer + CLI for web desk setups)
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: Dev Autographs ${{ github.ref_name }}
-          body_path: release-body.md
-          files: |
-            ${{ steps.files.outputs.exe }}
-            ${{ steps.files.outputs.sha }}
-            releases/${{ github.ref_name }}/cli.cjs
-            releases/${{ github.ref_name }}/paw-prints.cjs
-            releases/${{ github.ref_name }}/VERSION
-            releases/${{ github.ref_name }}/release.json
+      - name: Create a new release with verified assets (never update existing releases)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/publish-release.mjs publish "$GITHUB_REF_NAME" release-body.md
 
   windows-installer:
     if: github.event_name == 'workflow_dispatch'
@@ -135,6 +124,9 @@ jobs:
           cache: npm
           cache-dependency-path: dev-autographs/package-lock.json
 
+      - name: Exercise release validation and publication failures
+        run: node --test installer/scripts/release.test.mjs installer/scripts/publish-release.test.mjs
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
         with:
@@ -151,9 +143,8 @@ jobs:
           GH_TOKEN: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           if ($env:RELEASE_TAG -notmatch '^v\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$') { throw 'Invalid version tag' }
-          gh release view $env:RELEASE_TAG --repo Creal212/Dev-Autographs-Installer *> $null
-          if ($LASTEXITCODE -eq 0) { throw 'Published versions cannot be replaced. Choose a new version.' }
-          $global:LASTEXITCODE = 0
+          node installer/scripts/publish-release.mjs check $env:RELEASE_TAG
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Build monorepo (runs registry:sync first)
         working-directory: dev-autographs
@@ -205,15 +196,11 @@ jobs:
           $body += "`n`nWeb desk setup (.ps1 / .sh) installs **cli.cjs** from this release (same build)."
           Set-Content -Path release-body.md -Value $body
 
-      - name: Publish to Dev-Autographs-Installer Releases
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
-        with:
-          repository: Creal212/Dev-Autographs-Installer
-          tag_name: ${{ github.event.inputs.version }}
-          name: Dev Autographs ${{ github.event.inputs.version }}
-          body_path: release-body.md
-          files: |
-            ${{ steps.artifact.outputs.releaseDir }}/*
-          token: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+      - name: Create a new release with verified assets (never update existing releases)
+        shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.event.inputs.version }}
+          GH_TOKEN: ${{ secrets.INSTALLER_RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          node installer/scripts/publish-release.mjs publish $env:RELEASE_TAG release-body.md
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

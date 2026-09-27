@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '22'
       - name: Exercise release validation failures in isolated fixtures
-        run: node --test scripts/release.test.mjs
+        run: node --test scripts/release.test.mjs scripts/publish-release.test.mjs
       - name: Verify staged assets without modifying a published release
         shell: bash
         run: |
