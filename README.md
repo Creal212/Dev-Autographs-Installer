@@ -2,7 +2,7 @@
 
 Windows desktop releases and the matching CLI for Dev Autographs.
 
-**Current release: v0.2.14.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.14) · [SHA-256 manifest](releases/v0.2.14/release.json) · [Changelog](CHANGELOG.md)
+**Current release: v0.2.15.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.15) · [SHA-256 manifest](releases/v0.2.15/release.json) · [Changelog](CHANGELOG.md)
 
 This Windows release is **unsigned**: it has no Authenticode publisher certificate. SHA-256 checks detect differences from the published manifest; they do not establish an independently verified publisher or reproducible build. Windows may display an unknown-publisher warning.
 
@@ -39,7 +39,7 @@ Foreign Git hooks are preserved. An ambiguous active hook plus backup is left in
 Each version directory and GitHub Release includes the installer, its `.sha256`, `cli.cjs`, `paw-prints.cjs`, `VERSION`, and `release.json`. The manifest records asset sizes, SHA-256 values and the source commit.
 
 ```powershell
-Get-FileHash .\Dev-Autographs_0.2.14_x64-setup.exe -Algorithm SHA256
+Get-FileHash .\Dev-Autographs_0.2.15_x64-setup.exe -Algorithm SHA256
 ```
 
 Compare that value with `release.json` and the `.sha256` file. Web desk setup uses the pinned version and checks both CLI hashes before writing files or executing them. There is no raw-main or mutable-latest fallback. Existing different local identities are preserved.

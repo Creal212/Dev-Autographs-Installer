@@ -3,6 +3,16 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.15] - 2026-09-28
+
+The desk and web ledger use scrolling tables for owned repositories, signature changes, and codes in repositories you do not own. Source `4edf891b02710f49be13b05d5d6e4016d6eeeb4e`; exact asset hashes are in `releases/v0.2.15/release.json`. The installer remains unsigned.
+
+- Ledger tables list your repositories with signed-code counts, signature changes, active codes in other repositories, and inactive signatures there with overlay history.
+- A new signature keeps earlier keys for the same account on the previous-signature list and removes those local copies, so they no longer block Ink GitHub.
+- Local manifest verification matched the committed installer. Hosted Windows Server acceptance was not dispatched for this candidate.
+
+Interactive Windows 10/11, live OAuth and publisher signing remain unverified. Marketplace remains disabled.
+
 ## [0.2.14] - 2026-09-28
 
 The desk shows its running version and can install a newer Windows build from this repository. Source `35319b00bc5df00740557a4fac5c64f7e87a7262`; exact asset hashes are in `releases/v0.2.14/release.json`. The installer remains unsigned.
