@@ -2,7 +2,7 @@
 
 Windows desktop releases and the matching CLI for Dev Autographs.
 
-**Current release: v0.2.15.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.15) · [SHA-256 manifest](releases/v0.2.15/release.json) · [Changelog](CHANGELOG.md)
+**Current release: v0.2.16.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.16) · [SHA-256 manifest](releases/v0.2.16/release.json) · [Changelog](CHANGELOG.md)
 
 This Windows release is **unsigned**: it has no Authenticode publisher certificate. SHA-256 checks detect differences from the published manifest; they do not establish an independently verified publisher or reproducible build. Windows may display an unknown-publisher warning.
 
@@ -30,6 +30,8 @@ A pending desktop login can retry a transient save failure while the attempt rem
 | Update | Replaces program files while preserving the identity and settings. On first identity access, 0.2.9 migrates a plaintext signing key to DPAPI storage; public profile fields remain readable. |
 | Uninstall | Restores recorded Dev Autographs hooks before deleting program files. Ambiguous hook chains or missing prerequisites stop removal with an error. The profile identity remains; use Unlink first if you want registry revocation. |
 
+The setup file installs the desk and a minified CLI. It does not install the product source tree. Hooks are plain shell scripts that call that local CLI. They do not download code. An unknown-publisher warning on this unsigned installer is the missing Authenticode certificate. Compare the setup hash with `release.json` before running it. The source policy is `docs/distribution-and-hooks.md` in the Dev Autographs source repository.
+
 Commit hooks stage seal metadata before existing controls and verify the final index afterwards. Pushes publish actual outgoing Git objects without rewriting the checkout. Old generated wrappers stop before changes until explicitly upgraded with install-hooks. Website scripts require explicit sync-overlay, which lists unstaged changes and refuses unowned/modified outputs; remove-overlay restores recorded originals.
 
 Foreign Git hooks are preserved. An ambiguous active hook plus backup is left intact for manual review. Historical local hooks installed by older versions were not inventoried: run `node <path-to-cli.cjs> remove-hooks` inside those repositories before removal. `remove-hooks --global` restores global hooks and local hooks recorded by v0.2.8 and later. Some IDEs can bypass Git hooks; check the ledger instead of assuming every IDE action publishes.
@@ -39,7 +41,7 @@ Foreign Git hooks are preserved. An ambiguous active hook plus backup is left in
 Each version directory and GitHub Release includes the installer, its `.sha256`, `cli.cjs`, `paw-prints.cjs`, `VERSION`, and `release.json`. The manifest records asset sizes, SHA-256 values and the source commit.
 
 ```powershell
-Get-FileHash .\Dev-Autographs_0.2.15_x64-setup.exe -Algorithm SHA256
+Get-FileHash .\Dev-Autographs_0.2.16_x64-setup.exe -Algorithm SHA256
 ```
 
 Compare that value with `release.json` and the `.sha256` file. Web desk setup uses the pinned version and checks both CLI hashes before writing files or executing them. There is no raw-main or mutable-latest fallback. Existing different local identities are preserved.
