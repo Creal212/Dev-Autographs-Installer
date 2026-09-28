@@ -3,6 +3,12 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.17] - 2026-09-28
+
+One signing key stays with the GitHub account. Logging in downloads it, signs other devices out, and removes the key from those devices. Source `a434b4225649fe215d4901c4c3b28650c3da2c1d`; exact asset hashes are in `releases/v0.2.17/release.json`. The installer remains unsigned. SHA-256 `a14b02c959295ffa708450374077d1bb092102583e5d7c6b188ac04259fb385e`.
+
+- The ledger stays on the GitHub account, so every device that logs in shows the same repositories and signed-code counts.
+
 ## [0.2.16] - 2026-09-28
 
 The desk and the website both read repository names and signed-code counts from the registry account. Source `a1b1c0397146961f2308bf8146ec9df62dcc79a2`; exact asset hashes are in `releases/v0.2.16/release.json`. The installer remains unsigned. SHA-256 `5650aa73da7d67494106c5198166bec7d9e58479af210a55f87fea5c0e93d916`.
