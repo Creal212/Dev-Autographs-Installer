@@ -3,6 +3,16 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.14] - 2026-09-28
+
+The desk shows its running version and can install a newer Windows build from this repository. Source `35319b00bc5df00740557a4fac5c64f7e87a7262`; exact asset hashes are in `releases/v0.2.14/release.json`. The installer remains unsigned.
+
+- Stamp Room and the sidebar show the packaged version.
+- Install latest downloads the next `Dev-Autographs_<version>_x64-setup.exe`, checks `release.json`, and starts setup.
+- Local manifest verification matched the committed installer. Hosted Windows Server acceptance was not dispatched for this candidate.
+
+Interactive Windows 10/11, live OAuth and publisher signing remain unverified. Marketplace remains disabled.
+
 ## [0.2.13] - 2026-09-28
 
 GitHub device switching and safe account restoration. Source `e48b4574d23064741b526a8c4e8de9624e79a4d0`; exact asset hashes are in `releases/v0.2.13/release.json`. The installer remains unsigned.
