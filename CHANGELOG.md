@@ -3,6 +3,12 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.18] - 2026-09-28
+
+Signed codes on the desk and the website match the repository rows. Seals without a repository name stay on their own line. Source `fdce1cd22a2b65fdafc72d3e59a8051c2f3c6c46`; exact asset hashes are in `releases/v0.2.18/release.json`. The installer remains unsigned. SHA-256 `7b22f13c62016e51a21d96a64cc4ee76803ba5205c9d3cea4e33832e0736d962`.
+
+- The desk adds a codes-in-other-repos total, and signature-change dates are smaller. The website repo count is labeled repo locks.
+
 ## [0.2.17] - 2026-09-28
 
 One signing key stays with the GitHub account. Logging in downloads it, signs other devices out, and removes the key from those devices. Source `a434b4225649fe215d4901c4c3b28650c3da2c1d`; exact asset hashes are in `releases/v0.2.17/release.json`. The installer remains unsigned. SHA-256 `a14b02c959295ffa708450374077d1bb092102583e5d7c6b188ac04259fb385e`.
