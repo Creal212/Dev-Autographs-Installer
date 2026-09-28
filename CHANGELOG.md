@@ -3,6 +3,19 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.13] - 2026-09-28
+
+GitHub device switching and safe account restoration. Source `e48b4574d23064741b526a8c4e8de9624e79a4d0`; exact asset hashes are in `releases/v0.2.13/release.json`. The installer remains unsigned.
+
+- Move the active signing session through a fresh, proved GitHub login without requiring Unlink on the previous device. Restore the account's registered autograph profile, profile revision and known signing-key history. The registry rejects the previous key immediately; open desks check every 15 seconds and on focus.
+- Complete desktop login through the CLI's own device-session redemption. Validate the immutable account and exact pending key, then atomically persist the encrypted replacement. Arbitrary imports still reject a different identity. Failed protection, invalid responses and concurrent identity changes preserve the existing local key.
+- Restore public-key history only from the registry, never from an untrusted local account ID or key list. Keep ordinary local application settings; local project paths and device preferences are not synchronized through the registry.
+- Retry an approved desktop attempt after a transient save failure while its pending key remains in memory. A replaced, expired or lost attempt requires a fresh GitHub login. Token retries recheck that the exact approved account/key is still current. Bound CLI token responses to 2 MiB and 15 seconds, including the body, with redirects refused.
+- Reject new logins using a previously bound key. Serialize login with already-started local cleanup and bind status/unlink replies to their initiating identity. An unknown registry response leaves the recovery key on disk while showing the desk as signed out. Signed unlink requests for inactive keys receive an acknowledgement without disabling a newer active key.
+- Keep hook installation and automatic Repo Ink opt-in. Login does not reinstall hooks, change signed repository ownership rules or inject website assets. Exported web setup scripts still contain an encoded private key and use the conflict-protected import path; use desktop/CLI GitHub login to replace an existing identity.
+
+Exact release assets passed 23 actual installer assertions per Windows Server 2022/2025 VM in run 36377599630, including v0.2.8 upgrade, independent-account key decryption denial, preserved controls and complete fixture cleanup. The accepted candidate is `7ccaf191054741f837190193a28cfa40adf0b6d0`; the final commit changes documentation only. Device switching also has synthetic local registry/CLI, native and desktop browser regression coverage. Interactive Windows 10/11, live OAuth and publisher signing remain separate limits. Copied private keys remain indistinguishable cryptographic signers. Marketplace remains disabled.
+
 ## [0.2.12] - 2026-09-27
 
 Device-key possession, signature ownership isolation and explicit signing behavior. Source `e81cd86306d2a65856705d94a1bc185b828da5bd`; exact asset hashes are in `releases/v0.2.12/release.json`. The installer remains unsigned.
