@@ -3,6 +3,12 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.19] - 2026-09-29
+
+Global hooks stay on from Stamp Room. Turning them off asks first, because commits and pushes stop signing. If the hooks are removed, the desk says so and puts them back while the switch stays on. Source `36c70e141ee19706e43d10b97b036497be853287`; exact asset hashes are in `releases/v0.2.19/release.json`. The installer remains unsigned. SHA-256 `7434849957d65cc3c963abaaf6f2658ab3b2924c1d9277a99374f5dd355be4d9`.
+
+- Windows Security is named when its log records an action on the hook files. Otherwise the notice says no program name was recorded.
+
 ## [0.2.18] - 2026-09-28
 
 Signed codes on the desk and the website match the repository rows. Seals without a repository name stay on their own line. Source `fdce1cd22a2b65fdafc72d3e59a8051c2f3c6c46`; exact asset hashes are in `releases/v0.2.18/release.json`. The installer remains unsigned. SHA-256 `7b22f13c62016e51a21d96a64cc4ee76803ba5205c9d3cea4e33832e0736d962`.
