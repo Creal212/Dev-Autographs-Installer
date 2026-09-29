@@ -3,6 +3,13 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.20] - 2026-09-29
+
+A signed commit on a website writes the local Shift+D overlay into the repo and restores it if the script is removed. A private repository can take a repo lock when the signing computer already has that owner's GitHub credential. Source `99f8227d3c72c169b511d3e704be62b22c1c803a`; exact asset hashes are in `releases/v0.2.20/release.json`. The installer remains unsigned. SHA-256 `e4b5fe6c3a36543da19a4ab2cde0e58d1e460c149c8e2fa0af99baae12517882`.
+
+- The overlay file is generated on the computer. The hook does not download a program.
+- The registry uses the owner's GitHub credential once for a private repo check and does not store it.
+
 ## [0.2.19] - 2026-09-29
 
 Global hooks stay on from Stamp Room. Turning them off asks first, because commits and pushes stop signing. If the hooks are removed, the desk says so and puts them back while the switch stays on. Source `36c70e141ee19706e43d10b97b036497be853287`; exact asset hashes are in `releases/v0.2.19/release.json`. The installer remains unsigned. SHA-256 `7434849957d65cc3c963abaaf6f2658ab3b2924c1d9277a99374f5dd355be4d9`.
