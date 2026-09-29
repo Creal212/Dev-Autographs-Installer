@@ -2,17 +2,19 @@
 
 Windows desktop releases and the matching CLI for Dev Autographs.
 
-**Current release: v0.2.20.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.20) · [SHA-256 manifest](releases/v0.2.20/release.json) · [Changelog](CHANGELOG.md)
+**Current release: v0.2.21.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.21) · [SHA-256 manifest](releases/v0.2.21/release.json) · [Changelog](CHANGELOG.md)
 
 This Windows release is **unsigned**: it has no Authenticode publisher certificate. SHA-256 checks detect differences from the published manifest; they do not establish an independently verified publisher or reproducible build. Windows may display an unknown-publisher warning.
 
-Requirements: Windows 10/11 x64, [Node.js 20+](https://nodejs.org/) on PATH, and Git. The installer includes the desk, its CLI, and the WebView2 bootstrapper. Linking creates an identity only. Enable repository or global signing hooks explicitly after linking; automatic Repo Ink is off by default.
+Requirements: Windows 10/11 x64, [Node.js 20+](https://nodejs.org/) on PATH, and Git. The installer includes the desk, its CLI, and the WebView2 bootstrapper. The desk turns global hooks on after you link GitHub. The CLI installs hooks only when you pass `--hooks` or `--global`. Automatic Repo Ink is off by default.
+
+**Version 0.2.21** keeps one signing key for the GitHub account. Sign-in deposits it, and the registry seals that copy with AES-256-GCM. The next computer downloads the same key after GitHub approval, and the previous computer is signed out. A hooked commit on a website writes the local Shift+D script into that commit.
 
 ## What the product verifies
 
 Dev Autographs signs file content with a device key. Version 2 seals also authenticate the repository scope, exact file path and optional parent hash. The registry verifies a session-bound key-possession signature before associating an approved device key with GitHub's immutable account ID. Reports show valid signed evidence and registry status. They do not prove legal ownership, original authorship, an entire website's source coverage, or that a running page was built from those files.
 
-Private keys are generated on the device; the registry receives the public key. **Version 0.2.9 encrypts the Windows signing key at rest with DPAPI for the current Windows user.** The desktop and setup use the same CLI storage implementation. Existing plaintext identities are migrated only after encryption and decryption verification succeed, using an atomic encrypted replacement. Matching legacy copies are then removed; conflicting identities and concurrent changes cause a visible error. Chosen autograph/style settings are preserved. Non-Windows CLI identities remain mode-0600 files. Version 0.2.8 and earlier store plaintext keys in the user profile.
+The signing key is created on the computer. The registry stores an encrypted copy and does not return it from public pages. **Version 0.2.9 encrypts the Windows signing key at rest with DPAPI for the current Windows user.** The desktop and setup use the same CLI storage implementation. Existing plaintext identities are migrated only after encryption and decryption verification succeed, using an atomic encrypted replacement. Matching legacy copies are then removed; conflicting identities and concurrent changes cause a visible error. Chosen autograph/style settings are preserved. Non-Windows CLI identities remain mode-0600 files. Version 0.2.8 and earlier store plaintext keys in the user profile.
 
 DPAPI does not stop a process already running as your Windows user from requesting decryption. Protect your Windows account and any exported setup script: the script contains an encoded private key and should be deleted after use. Unlink only removes local key files after the registry confirms revocation or acknowledges a signed request for an already inactive key; a network failure preserves the retry key. File deletion cannot guarantee physical erasure from SSDs, snapshots, or backups.
 
@@ -26,13 +28,13 @@ A pending desktop login can retry a transient save failure while the attempt rem
 
 | Operation | Behavior |
 |---|---|
-| Install | Installs program files for the current Windows user. Linking GitHub creates the local identity. Hook installation is a separate explicit action with error/retry handling. |
+| Install | Installs program files for the current Windows user. Linking GitHub creates the local identity. The desk turns global hooks on and can put them back if they are removed. |
 | Update | Replaces program files while preserving the identity and settings. On first identity access, 0.2.9 migrates a plaintext signing key to DPAPI storage; public profile fields remain readable. |
 | Uninstall | Restores recorded Dev Autographs hooks before deleting program files. Ambiguous hook chains or missing prerequisites stop removal with an error. The profile identity remains; use Unlink first if you want registry revocation. |
 
 The setup file installs the desk and a minified CLI. It does not install the product source tree. Hooks are plain shell scripts that call that local CLI. They do not download code. An unknown-publisher warning on this unsigned installer is the missing Authenticode certificate. Compare the setup hash with `release.json` before running it. The source policy is `docs/distribution-and-hooks.md` in the Dev Autographs source repository.
 
-Commit hooks stage seal metadata before existing controls and verify the final index afterwards. Pushes publish actual outgoing Git objects without rewriting the checkout. Old generated wrappers stop before changes until explicitly upgraded with install-hooks. Website scripts require explicit sync-overlay, which lists unstaged changes and refuses unowned/modified outputs; remove-overlay restores recorded originals.
+Commit hooks stage seal metadata before existing controls and verify the final index afterwards. Pushes publish actual outgoing Git objects without rewriting the checkout. Old generated wrappers stop before changes until explicitly upgraded with install-hooks. A hooked commit on a website writes the local Shift+D script into that commit. `sync-overlay` is the explicit refresh: it lists edits and does not stage them. `remove-overlay` restores recorded originals.
 
 Foreign Git hooks are preserved. An ambiguous active hook plus backup is left intact for manual review. Historical local hooks installed by older versions were not inventoried: run `node <path-to-cli.cjs> remove-hooks` inside those repositories before removal. `remove-hooks --global` restores global hooks and local hooks recorded by v0.2.8 and later. Some IDEs can bypass Git hooks; check the ledger instead of assuming every IDE action publishes.
 
@@ -41,7 +43,7 @@ Foreign Git hooks are preserved. An ambiguous active hook plus backup is left in
 Each version directory and GitHub Release includes the installer, its `.sha256`, `cli.cjs`, `paw-prints.cjs`, `VERSION`, and `release.json`. The manifest records asset sizes, SHA-256 values and the source commit.
 
 ```powershell
-Get-FileHash .\Dev-Autographs_0.2.20_x64-setup.exe -Algorithm SHA256
+Get-FileHash .\Dev-Autographs_0.2.21_x64-setup.exe -Algorithm SHA256
 ```
 
 Compare that value with `release.json` and the `.sha256` file. Web desk setup uses the pinned version and checks both CLI hashes before writing files or executing them. There is no raw-main or mutable-latest fallback. Existing different local identities are preserved.

@@ -1,10 +1,10 @@
 {
   "version": "pawprints-seal-v2",
-  "contentSha256": "1cbe0908ab0af26ea3131c46a160662f1612c1f953fcba9f4c383aed7ef60481",
+  "contentSha256": "f932f4d53135bacbe68e838a3d00c8e8fd1d16883a6f9ad6457b7fbf31fa09fe",
   "path": "CHANGELOG.md",
   "signer": "MCowBQYDK2VwAyEAigpy27f_tv3k07k1nb3FNLCAYQtAkAHb4EMUTs7bR3k",
   "displayMark": "Creal589",
-  "createdAt": "2026-09-29T05:38:43.589Z",
+  "createdAt": "2026-09-29T10:40:11.409Z",
   "repoScope": "creal212/dev-autographs-installer",
-  "signature": "awhqDAblL9j3xNYVPjyICGfcBLwPOKeY2z4aM-wjIgAtU-xFgxmTAsRJMPS14q3vujUBx-yzHwAVWe1Kk19wCA"
+  "signature": "je-u8at8ZdL5E0t6N8I-VFairaWDg5-rQ8GWf4eBVMKlxXN93xqst6VgzArVUB9UWF6qEM28dFi9TiM3eaSvCg"
 }

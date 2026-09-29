@@ -3,6 +3,13 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.21] - 2026-09-29
+
+A second computer can finish GitHub sign-in. The desk accepts the account signing key the registry releases, and the first sign-in deposits that key so it can be sealed. Source `2ca502e6b38e6b60d3071d29e62d1e2f6f50f970`; exact asset hashes are in `releases/v0.2.21/release.json`. The installer remains unsigned. SHA-256 `2dce936a904d71994d0a20d49c057063463f321b7109ffc8e39cb6981e86fa49`.
+
+- Public pages describe the encrypted key copy, global hooks on the Windows desk, and the overlay a hooked website commit writes.
+- Mark lookup shows the public account in words instead of a raw dump.
+
 ## [0.2.20] - 2026-09-29
 
 A signed commit on a website writes the local Shift+D overlay into the repo and restores it if the script is removed. A private repository can take a repo lock when the signing computer already has that owner's GitHub credential. Source `99f8227d3c72c169b511d3e704be62b22c1c803a`; exact asset hashes are in `releases/v0.2.20/release.json`. The installer remains unsigned. SHA-256 `e4b5fe6c3a36543da19a4ab2cde0e58d1e460c149c8e2fa0af99baae12517882`.
