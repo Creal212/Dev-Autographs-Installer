@@ -2,13 +2,13 @@
 
 Windows desktop releases and the matching CLI for Dev Autographs.
 
-**Current release: v0.2.21.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.21) · [SHA-256 manifest](releases/v0.2.21/release.json) · [Changelog](CHANGELOG.md)
+**Current release: v0.2.22.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.22) · [SHA-256 manifest](releases/v0.2.22/release.json) · [Changelog](CHANGELOG.md)
 
 This Windows release is **unsigned**: it has no Authenticode publisher certificate. SHA-256 checks detect differences from the published manifest; they do not establish an independently verified publisher or reproducible build. Windows may display an unknown-publisher warning.
 
 Requirements: Windows 10/11 x64, [Node.js 20+](https://nodejs.org/) on PATH, and Git. The installer includes the desk, its CLI, and the WebView2 bootstrapper. The desk turns global hooks on after you link GitHub. The CLI installs hooks only when you pass `--hooks` or `--global`. Automatic Repo Ink is off by default.
 
-**Version 0.2.21** keeps one signing key for the GitHub account. Sign-in deposits it, and the registry seals that copy with AES-256-GCM. The next computer downloads the same key after GitHub approval, and the previous computer is signed out. A hooked commit on a website writes the local Shift+D script into that commit.
+**Version 0.2.22** stores the pre-push temporary file in the Windows temp folder as `dev-autographs-pre-push-...`, so Windows Security does not flag a dotted random file inside the hooks folder. The desk rewrites an older generated hook once after you update. One signing key still stays with the GitHub account.
 
 ## What the product verifies
 
@@ -43,7 +43,7 @@ Foreign Git hooks are preserved. An ambiguous active hook plus backup is left in
 Each version directory and GitHub Release includes the installer, its `.sha256`, `cli.cjs`, `paw-prints.cjs`, `VERSION`, and `release.json`. The manifest records asset sizes, SHA-256 values and the source commit.
 
 ```powershell
-Get-FileHash .\Dev-Autographs_0.2.21_x64-setup.exe -Algorithm SHA256
+Get-FileHash .\Dev-Autographs_0.2.22_x64-setup.exe -Algorithm SHA256
 ```
 
 Compare that value with `release.json` and the `.sha256` file. Web desk setup uses the pinned version and checks both CLI hashes before writing files or executing them. There is no raw-main or mutable-latest fallback. Existing different local identities are preserved.

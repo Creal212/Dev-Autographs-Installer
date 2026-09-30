@@ -3,6 +3,12 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.22] - 2026-09-29
+
+The global pre-push hook stores git's push input in the Windows temp folder under a plain `dev-autographs-pre-push` name. It no longer creates a dotted random file inside `.dev-autographs\hooks`, which Windows Security was flagging as IDP.Generic. After this update, the desk rewrites that older hook once. Source `69189b7cd5fcc07072d04ed97e0a32047a3b2fa5`; exact asset hashes are in `releases/v0.2.22/release.json`. The installer remains unsigned. SHA-256 `4e681771880710833b36808fd32ab4267782759c04e2fc6f769bb785eacd9dac`.
+
+- Temporary push input lives in the OS temp folder, not beside the hook files.
+
 ## [0.2.21] - 2026-09-29
 
 A second computer can finish GitHub sign-in. The desk accepts the account signing key the registry releases, and the first sign-in deposits that key so it can be sealed. Source `2ca502e6b38e6b60d3071d29e62d1e2f6f50f970`; exact asset hashes are in `releases/v0.2.21/release.json`. The installer remains unsigned. SHA-256 `2dce936a904d71994d0a20d49c057063463f321b7109ffc8e39cb6981e86fa49`.
