@@ -3,6 +3,12 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.23] - 2026-09-29
+
+Stamp Room and Meet the Dev open a Buy Me a Coffee page in the browser. Source `70c03c4e6447dbbf4c0050fb332e35c608a9526d`; exact asset hashes are in `releases/v0.2.23/release.json`. The installer remains unsigned. SHA-256 `e1732a95390360b9991134dcb4a923862738a432035910f3fa00c74cbf0845a2`.
+
+- The coffee link is `https://buymeacoffee.com/creal589`.
+
 ## [0.2.22] - 2026-09-29
 
 The global pre-push hook stores git's push input in the Windows temp folder under a plain `dev-autographs-pre-push` name. It no longer creates a dotted random file inside `.dev-autographs\hooks`, which Windows Security was flagging as IDP.Generic. After this update, the desk rewrites that older hook once. Source `69189b7cd5fcc07072d04ed97e0a32047a3b2fa5`; exact asset hashes are in `releases/v0.2.22/release.json`. The installer remains unsigned. SHA-256 `4e681771880710833b36808fd32ab4267782759c04e2fc6f769bb785eacd9dac`.
