@@ -3,6 +3,17 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.24] - 2026-10-05
+
+Dev Autographs now uses the Axiom Risk Group orbital identity across the desktop, website, browser extension and contribution overlays. Decorative motion can be paused and respects reduced-motion preferences. OS and installer icons use the same mark in static form. Cyril's guide portrait retains its pose and carries the Axiom emblem. User autograph artwork and signed contribution records are preserved.
+
+- Axiom Risk Group LLC publisher metadata and current About us/business contact links. Current donation links removed.
+- Readable Terms, Privacy, Intellectual Property, data-behavior, Apache license/NOTICE and original font/frontend third-party notices bundled under legal/. Proved login's encrypted account-key recovery is described explicitly; public signatures do not prove legal ownership or original authorship.
+- Canonical source: 6f6c22d11345f8edc866f498dc7ff3f756515955. Windows installer SHA-256: e191909b24280d500245add3b1cdadb7bdbdaa71a0ee3cc334f5d0b00e0b4ab0. Exact release asset hashes and sizes are in releases/v0.2.24/release.json.
+- 23 silent installer lifecycle checks passed on each Windows Server 2022 and 2025 VM in run37354871739. Installed resources and CLI bytes match the reviewed source.
+
+The installer is unsigned, as authorized. Interactive Windows 10/11, SmartScreen/UAC, missing-WebView2 bootstrap and live OAuth remain separate unverified gates. Existing published versions remain unchanged.
+
 ## [0.2.23] - 2026-09-29
 
 Stamp Room and Meet the Dev open a Buy Me a Coffee page in the browser. Source `70c03c4e6447dbbf4c0050fb332e35c608a9526d`; exact asset hashes are in `releases/v0.2.23/release.json`. The installer remains unsigned. SHA-256 `e1732a95390360b9991134dcb4a923862738a432035910f3fa00c74cbf0845a2`.
