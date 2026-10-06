@@ -2,13 +2,13 @@
 
 Windows desktop releases and the matching CLI for Dev Autographs.
 
-**Current release: v0.2.24.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.24) · [SHA-256 manifest](releases/v0.2.24/release.json) · [Changelog](CHANGELOG.md)
+**Current release: v0.2.25.** [Download and release notes](https://github.com/Creal212/Dev-Autographs-Installer/releases/tag/v0.2.25) · [SHA-256 manifest](releases/v0.2.25/release.json) · [Changelog](CHANGELOG.md)
 
 This Windows release is **unsigned**: it has no Authenticode publisher certificate. SHA-256 checks detect differences from the published manifest; they do not establish an independently verified publisher or reproducible build. Windows may display an unknown-publisher warning.
 
 Requirements: Windows 10/11 x64, [Node.js 20+](https://nodejs.org/) on PATH, and Git. The installer includes the desk, its CLI, and the WebView2 bootstrapper. The desk turns global hooks on after you link GitHub. The CLI installs hooks only when you pass `--hooks` or `--global`. Automatic Repo Ink is off by default.
 
-**Version 0.2.24** applies the animated Axiom Risk Group identity to the desktop, web desk and contribution overlay. Axiom Risk Group LLC is the publisher. Motion can be paused and follows reduced-motion preferences. The installer includes readable Terms, Privacy, Intellectual Property, data-behavior and third-party license files under `legal/`; Apache-2.0 source permissions and original third-party notices remain intact. Donation links have been removed from current product pages.
+**Version 0.2.25** refreshes the backing around the animated Axiom emblem and gives the desktop ledger header a separate seal cell, so it stays clear of text and controls. The web page removes its stamp-pad decoration, and the CLI contribution report uses the matching vector backing. Axiom Risk Group LLC remains the publisher. Motion controls, reduced-motion behavior, user autograph artwork, signed records and all installed legal/license notices are preserved. Authentication, registry services, hooks and user data behavior are unchanged.
 
 ## What the product verifies
 
@@ -52,14 +52,16 @@ Compare that value with `release.json` and the `.sha256` file. Web desk setup us
 
 1. In [Dev-Autographs](https://github.com/Creal212/Dev-Autographs), update desktop versions, run `npm ci`, `npm run build`, `npm test`, `npm run smoke:registry`, browser tests and native tests. Run `npm run tauri:build`. Inspect the installer and confirm its embedded CLI matches the tested bundle.
 2. Commit all reviewed source and generated bundles. The source checkout must be clean, including untracked files.
-3. In this repository run `node scripts/prepare-release.mjs <source-checkout> <built-installer.exe> 0.2.24` using a new version. This stages matching CLI files and a manifest; it does not independently prove the supplied EXE was built from that source.
-4. Run `node scripts/verify-release.mjs v0.2.24`, commit/push the candidate to main without a release tag, and run the Windows installer acceptance workflow with that explicit target version. Verify both reports against the candidate commit, source commit and exact installer hash.
+3. In this repository run `node scripts/prepare-release.mjs <source-checkout> <built-installer.exe> 0.2.25` using a new version. This stages matching CLI files and a manifest; it does not independently prove the supplied EXE was built from that source.
+4. Run `node scripts/verify-release.mjs v0.2.25`, commit/push the candidate to main without a release tag, and run the Windows installer acceptance workflow with that explicit target version. Verify both reports against the candidate commit, source commit and exact installer hash.
 5. After required source checks and both VM jobs pass, update the changelog and README. Confirm the final documentation commit leaves every accepted payload unchanged, then push the new version tag. The tag workflow verifies the exact asset set, requires an explicit GitHub HTTP 404 before creation, and uses create-only publication with no overwrite fallback. A racing or existing release cannot be updated. API errors stop publication; upload failures require inspection before retrying.
 6. Check the GitHub Release asset digests and freshly downloaded bytes, then deploy the website with the same pinned version. A CLI update requires a new release version.
 
 The optional manual GitHub build requires an unused version tag already pushed to this repository and `INSTALLER_RELEASE_TOKEN` with read access to the source repository and write access here. Action revisions are pinned; the workflow builds and tests before packaging. Both publishing paths verify the tag and create a new release with its assets; neither can update an existing release. Run `node --test scripts/release.test.mjs scripts/publish-release.test.mjs` to exercise preparation, integrity, API-error and publication-race failures in isolated fixtures.
 
 ## Acceptance limits
+
+The v0.2.25 installer passed **23 real silent lifecycle assertions on each Windows Server 2022 and 2025 VM** in [run 37410102291](https://github.com/Creal212/Dev-Autographs-Installer/actions/runs/37410102291). Acceptance tested candidate `9e17fea1695898b9f8bd888be89cf7a006a67363`, canonical source `cad4fc49e18a6833f42405aa9384ddd0f5854b44`, and installer SHA-256 `a50486ed980ae03cfb838c92daa141e6e4635ecece5bb98c1ae254add2c7ba81`. All 28 packaged legal/license resources and both embedded CLI files match the reviewed source. The final documentation commit leaves every accepted release payload unchanged. The exact compiled UI assets, new vector backing and native NSIS bundle marker were also checked.
 
 The v0.2.24 installer passed **23 real silent lifecycle assertions on each Windows Server 2022 and 2025 VM** in [run 37354871739](https://github.com/Creal212/Dev-Autographs-Installer/actions/runs/37354871739). Acceptance tested candidate `efb680c7ada3fca679e6fcfae52db016cfe1bc72`, canonical source `6f6c22d11345f8edc866f498dc7ff3f756515955`, and installer SHA-256 `e191909b24280d500245add3b1cdadb7bdbdaa71a0ee3cc334f5d0b00e0b4ab0`. The final documentation commit leaves accepted payloads unchanged. All 28 packaged policy/license resources and both embedded CLI files were extracted and compared byte for byte with the reviewed source.
 

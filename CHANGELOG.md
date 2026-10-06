@@ -3,6 +3,18 @@
 All notable changes to the Dev Autographs desk, CLI, registry and web desk.
 Dates are the day the installer was posted (UTC). Format follows Keep a Changelog; versions follow SemVer.
 
+## [0.2.25] - 2026-10-06
+
+Version 0.2.25 refines the Axiom seal's faceted vector backing. The animated orbital emblem stays centered, and the desktop ledger uses a separate normal-layout seal cell so the heading and controls remain clear. The website removes its red, dashed stamp-pad decoration; the CLI contribution report uses the same refreshed vector seal.
+
+- Publisher, motion controls, reduced-motion behavior, user autograph images and signed contribution records are preserved.
+- The same 28 legal/license files and matching CLI are packaged. Apache-2.0 and third-party grants remain unchanged.
+- No authentication, registry service, hook or user-data behavior changes.
+- Reviewed source: cad4fc49e18a6833f42405aa9384ddd0f5854b44. Installer SHA-256: a50486ed980ae03cfb838c92daa141e6e4635ecece5bb98c1ae254add2c7ba81. Exact sizes and hashes are in releases/v0.2.25/release.json.
+- All four required source CI jobs passed in run 37409818177. The real silent installer lifecycle passed 23 checks on each Windows Server 2022 and 2025 VM in run 37410102291; results bind to candidate 9e17fea1695898b9f8bd888be89cf7a006a67363, this source and these exact setup bytes.
+
+This release is unsigned, as authorized. Interactive Windows 10/11, SmartScreen/UAC, missing-WebView2 bootstrap and live OAuth remain separate unverified gates. Existing releases are preserved.
+
 ## [0.2.24] - 2026-10-05
 
 Dev Autographs now uses the Axiom Risk Group orbital identity across the desktop, website, browser extension and contribution overlays. Decorative motion can be paused and respects reduced-motion preferences. OS and installer icons use the same mark in static form. Cyril's guide portrait retains its pose and carries the Axiom emblem. User autograph artwork and signed contribution records are preserved.
